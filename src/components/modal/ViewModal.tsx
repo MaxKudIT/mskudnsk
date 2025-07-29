@@ -2,6 +2,7 @@ import React, {FC, ReactElement} from 'react';
 import Modal from "react-modal";
 import PhoneIcon from '@mui/icons-material/Phone';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import {useTheme} from "../context/ThemeContext";
 type MiniModalProps = {
     onClose: () => void,
     condition: boolean,
@@ -16,10 +17,15 @@ type MiniModalProps = {
 }
 
 const ViewModal: FC<MiniModalProps> = ({onClose, condition, height, left, user: {color, nickname, phonenumber}}) => {
+
+    const {theme} = useTheme()
+
+    const backModalCalculdate = theme === 'dark' ? 'linear-gradient(0deg,rgba(79, 3, 34, 1) 0%, rgba(56, 3, 28, 1) 100%)' : 'linear-gradient(0deg,rgba(76, 9, 171, 1) 0%, rgba(64, 9, 143, 1) 100%)'
+
     return (
         <Modal style={{
             content: {
-                background: 'linear-gradient(0deg,rgba(79, 3, 34, 1) 0%, rgba(56, 3, 28, 1) 100%)',
+                background: backModalCalculdate,
                 width: 360,
                 height: height || 320,
                 color: 'rgba(255,255,255,0.8)',
@@ -98,7 +104,7 @@ const ViewModal: FC<MiniModalProps> = ({onClose, condition, height, left, user: 
                 height: 30
             }}>
                 <DeleteOutlineIcon style={{color: 'red'}} fontSize={'medium'}/>
-                <p style={{fontWeight: 500, fontSize: 17, color: 'red'}}>Удалить из контактов</p>
+                <p style={{fontWeight: 600, fontSize: 17, color: 'red'}}>Удалить из контактов</p>
             </div>
         </Modal>
     );

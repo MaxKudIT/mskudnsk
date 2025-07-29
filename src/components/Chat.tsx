@@ -5,11 +5,14 @@ import MessageWrapper from './MessageWrapper';
 import ChatInput from "./ui/inputs/ChatInput";
 import {ChatContainer} from "@chatscope/chat-ui-kit-react";
 import ViewModal from "./modal/ViewModal";
+import {useTheme} from "./context/ThemeContext";
 
 
 
 
 const Chat = () => {
+
+    const {theme} = useTheme()
 
     const [msgs, setMsgs] = useState(['Привет', 'Как ты?'])
     const getInputValue = (value: string) => {
@@ -31,7 +34,7 @@ const Chat = () => {
             />
         <HeaderChat getUserpage={getUserpage}/>
 
-            <div className={styles.chat_messages_body}>
+            <div className={styles[`chat_messages_body_${theme}`]}>
                 <div className={styles.chat_messages_container}>
                     {msgs.map(message => (
                         <MessageWrapper content={message}/>

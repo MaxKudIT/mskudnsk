@@ -4,6 +4,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {formatTime} from "../../utlis/formatting";
 import {useSelected} from "../context/selected/SelectedProvider";
+import {useTheme} from "../context/ThemeContext";
+
 
 type LastMessageType = {
     text: string
@@ -26,8 +28,31 @@ export type ChatPreviewProps = {
 
 
 const ChatPreview: FC<ChatPreviewProps> = React.memo(({nickname, lastMessage: {text,isMy, ...rest}, date, color, id, classname}) => {
-    console.log(5)
-    const {setSelectedChatId} = useSelected()
+    const {theme} = useTheme()
+
+
+
+
+    const {selectedChatId, setSelectedChatId} = useSelected()
+
+    const colorCalculate = () => {
+        if (theme === 'dark' || selectedChatId === id) {
+            return 'white'
+        } else {
+            return 'rgba(0,0,0,0.9)'
+        }
+    }
+    const iconColorCalculate = selectedChatId === id ? 'rgba(255,255,255,0.9)' : 'gray'
+
+    const opacityCalculate = () => {
+        if (selectedChatId === id) {
+            return '0.9'
+        } else {
+            return '0.6'
+        }
+    }
+
+
     const count = !isMy && 'countUnReadMessages' in rest ? rest.countUnReadMessages : 0
     const isReadCalc = isMy && 'isRead' in rest ? rest.isRead : false
     return (
@@ -49,11 +74,11 @@ const ChatPreview: FC<ChatPreviewProps> = React.memo(({nickname, lastMessage: {t
                         justifyContent: 'space-evenly',
                         padding: '0 10px'
             }}>
-                <p style={{fontSize: 20, color: 'white', opacity: 0.9, fontWeight: 600, letterSpacing: 0.3}}>{nickname}</p>
+                <p style={{fontSize: 20, color: colorCalculate(), opacity: 0.9, fontWeight: 600, letterSpacing: 0.3}}>{nickname}</p>
                 <p style={{
                     fontSize: 16,
-                    color: 'white',
-                    opacity: 0.6,
+                    color: colorCalculate(),
+                    opacity: opacityCalculate(),
                     whiteSpace: 'nowrap',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
@@ -67,12 +92,12 @@ const ChatPreview: FC<ChatPreviewProps> = React.memo(({nickname, lastMessage: {t
                 justifyContent: 'space-evenly',
                 alignItems: "flex-end"
             }}>
-                <p style={{color: 'rgba(255,255,255, 0.9', fontWeight: '500'}}>{formatTime(date)}</p>
+                <p style={{color: colorCalculate(), fontWeight: '500'}}>{formatTime(date)}</p>
                 {isMy ?
                     isReadCalc ? (
                         <VisibilityIcon fontSize={'small'} style={{color: '#BD094E'}}/>
                     ) : (
-                        <VisibilityOffIcon fontSize={'small'} style={{color: 'gray'}}/>
+                        <VisibilityOffIcon fontSize={'small'} style={{color: iconColorCalculate}}/>
                     ) : (
                         <div style={{
                             paddingLeft: 8,

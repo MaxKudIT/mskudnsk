@@ -85,7 +85,7 @@ const Home = () =>
     // }
 
     return (
-      <div style={{justifyContent: selectedChatId === null ? 'center' : 'flex-start'}} className={styles.page}>
+      <div style={{justifyContent: selectedChatId === null ? 'center' : 'flex-start'}} className={styles[`page_${theme}`]}>
 
           <div className={styles[`main_container_${theme}`]}>
             <MMCreate
@@ -103,8 +103,8 @@ const Home = () =>
                 left={selectedChatId !== null ? '22%' : '47%'}
                 onClose={() => setSelectedMiniPopup(null)}
                 condition={selectedMiniPopup === 'settings_mini_popup'}
-                height={120}
-                buttonsProps={[{text: 'Тема', icon: <DarkModeIcon fontSize={'small'} style={{color: 'white'}}/>}, {text: 'Язык', icon: <LanguageIcon fontSize={'small'} style={{color: 'white'}}/>}, {text: 'Уведомления', icon: <NotificationsIcon fontSize={'small'} style={{color: 'white'}}/>}]}/>
+                height={90}
+                buttonsProps={[{text: 'Тема', icon: <DarkModeIcon fontSize={'small'} style={{color: 'white'}}/>},  {text: 'Уведомления', icon: <NotificationsIcon fontSize={'small'} style={{color: 'white'}}/>}]}/>
             <HeaderHome actions={{getInputValue: getInputValue, getChoiceIndex: getChoiceIndex}}/>
             {input.length === 0 ? (
                 <ChatList chats={chats} />
@@ -115,31 +115,7 @@ const Home = () =>
 
         </div>
           {selectedChatId !== null && <Chat />}
-          <Switch
-                onChange={() => {
-                    if (theme === 'light') {
-                        setTheme('dark')
-                    } else {
-                        setTheme('light')
-                    }
-                }}
-              checked={theme === 'dark'}
-              height={28}
-              width={60}
-              handleDiameter={24}
-              offColor="#333"
-              onColor="#767676"
-              uncheckedIcon={
-                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                      <p>lol</p>
-                  </div>
-              }
-              checkedIcon={
-                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                      <p>u</p>
-                  </div>
-              }
-          />
+
 
       </div>
       )

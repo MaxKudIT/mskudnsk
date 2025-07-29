@@ -7,6 +7,7 @@ import {Input} from 'antd'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {ValidatePhoneFormat} from "../../../utlis/validate";
 import {formatInput} from "../../../utlis/formatting";
+import {useTheme} from "../../context/ThemeContext";
 type CreatingContactModalProps = {
     onClose: () => void,
     condition: boolean,
@@ -22,11 +23,15 @@ const CreatingContactModal: FC<CreatingContactModalProps> = ({onClose, condition
     const [input, setInput] = useState('')
     const [errormsg, setErrormsg] = useState('')
 
+    const {theme} = useTheme()
+
+    const backModalCalculdate = theme === 'dark' ? 'linear-gradient(0deg,rgba(79, 3, 34, 1) 0%, rgba(56, 3, 28, 1) 100%)' : 'linear-gradient(0deg,rgba(76, 9, 171, 1) 0%, rgba(64, 9, 143, 1) 100%)'
+
 
     return (
         <Modal  style={{
             content: {
-                background: 'linear-gradient(0deg,rgba(79, 3, 34, 1) 0%, rgba(56, 3, 28, 1) 100%)',
+                background: backModalCalculdate,
                 width: 350,
                 height: height || 290,
                 color: 'rgba(255,255,255,0.8)',
@@ -55,7 +60,7 @@ const CreatingContactModal: FC<CreatingContactModalProps> = ({onClose, condition
                 marginBottom: 30,
             }}>Добавление контакта</p>
             <p style={{fontSize: 15, color: 'rgba(255,255,255,0.6)', marginBottom: 5}}>Номер телефона</p>
-            <p style={{fontSize: 13, color: 'red', marginBottom: 5}}>{errormsg}</p>
+            <p style={{fontSize: 13, color: 'red', marginBottom: 5, fontWeight: 600}}>{errormsg}</p>
             <div style={{
                 display: 'flex',
                 alignItems: 'center',

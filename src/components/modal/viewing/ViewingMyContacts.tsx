@@ -4,6 +4,7 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ContactsContainer from "../../ContactsContainer";
 import {ContactPreviewProps} from "../../preview/ContactPreviewWithSelect";
+import {useTheme} from "../../context/ThemeContext";
 type MiniModalProps = {
     onClose: () => void,
     condition: boolean,
@@ -13,6 +14,11 @@ type MiniModalProps = {
 }
 
 const ViewingMyContacts: FC<MiniModalProps> = ({onClose, condition, height, left}) => {
+
+    const {theme} = useTheme()
+
+    const backModalCalculdate = theme === 'dark' ? 'linear-gradient(0deg,rgba(79, 3, 34, 1) 0%, rgba(56, 3, 28, 1) 100%)' : 'linear-gradient(0deg,rgba(76, 9, 171, 1) 0%, rgba(64, 9, 143, 1) 100%)'
+
     const [contacts, setContacts] = useState<ContactPreviewProps[]>([
         {id: 'Ivan1', color: 'orange', nickname: 'Иван'},
         {id: 'Egor1', color: 'purple', nickname: 'Егор'},
@@ -24,7 +30,7 @@ const ViewingMyContacts: FC<MiniModalProps> = ({onClose, condition, height, left
     return (
         <Modal style={{
             content: {
-                background: 'linear-gradient(0deg,rgba(79, 3, 34, 1) 0%, rgba(56, 3, 28, 1) 100%)',
+                background: backModalCalculdate,
                 width: 360,
                 height: height || 500,
                 color: 'rgba(255,255,255,0.8)',

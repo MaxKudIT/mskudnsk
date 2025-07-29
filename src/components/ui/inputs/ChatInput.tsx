@@ -2,6 +2,7 @@ import React, {FC, useEffect, useRef, useState} from 'react';
 import styles from '../../../modules/Chat.module.css'
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from "@mui/icons-material/Close";
+import {useTheme} from "../../context/ThemeContext";
 
 
 export type ChatProps = {
@@ -12,7 +13,7 @@ const ChatInput: FC<ChatProps> = ({getInputValue}) => {
     const [input, setInput] = useState('');
     const inputRef = useRef<HTMLInputElement>(null);
 
-
+    const {theme} = useTheme()
 
 
 
@@ -40,20 +41,22 @@ const ChatInput: FC<ChatProps> = ({getInputValue}) => {
     }, [input]);
 
 
+    const colorInput = theme === 'dark' ? 'white' : 'black'
+
 
     return (
-       <div className={styles.chat_input}>
+       <div className={styles[`chat_input_${theme}`]}>
            <CloseIcon  onClick={() => setInput('')} className={`
                ${styles.chat_clean_button} 
                ${input.length > 1 ?
-               styles.chat_clean_button_is_active :
+               styles[`chat_clean_button_is_active_${theme}`] :
                styles.chat_clean_button_is_not_active}`} fontSize={'medium'}/>
            <input ref={inputRef} value={input} style={{
                height: '100%',
                width: '95%',
                border: 'none',
                fontSize: 18,
-               color: 'white',
+               color: colorInput,
                opacity: 0.9,
                fontWeight: '400',
                letterSpacing: 0.1,

@@ -5,6 +5,7 @@ import {SvgIconProps} from "@mui/material";
 import ViewingMyAcc from "../viewing/ViewingMyAcc";
 import ViewingMyContacts from "../viewing/ViewingMyContacts";
 import {useSelectedMiniPopup} from "../../context/selected/SelectedMiniPopupProvider";
+import {useTheme} from "../../context/ThemeContext";
 
 
 type MiniModalProps = {
@@ -16,12 +17,17 @@ type MiniModalProps = {
 }
 
 const MMmyAcc: FC<MiniModalProps> = ({onClose, condition, buttonsProps, height, left}) => {
+
+    const {theme} = useTheme()
+
+    const backModalCalculdate = theme === 'dark' ? 'linear-gradient(0deg,rgba(79, 3, 34, 1) 0%, rgba(56, 3, 28, 1) 100%)' : 'linear-gradient(0deg,rgba(76, 9, 171, 1) 0%, rgba(64, 9, 143, 1) 100%)'
+
     const [currentModalNext, setCurrentModalNext] = useState<string | null>(null);
     return (
         <Modal  style={{
             content: {
                 position: 'absolute',
-                background: 'linear-gradient(0deg,rgba(79, 3, 34, 1) 0%, rgba(56, 3, 28, 1) 100%)',
+                background: backModalCalculdate,
                 width: 220,
                 height: height || 90,
                 color: 'rgba(255,255,255,0.8)',
@@ -32,7 +38,7 @@ const MMmyAcc: FC<MiniModalProps> = ({onClose, condition, buttonsProps, height, 
                 justifyContent: 'center',
                 alignItems: 'center',
                 flexDirection: 'column',
-                top: 60,
+                top: 70,
                 left: left,
                 padding: 0
             },
@@ -48,7 +54,7 @@ const MMmyAcc: FC<MiniModalProps> = ({onClose, condition, buttonsProps, height, 
             {buttonsProps.map(props => {
                 if (props.text === 'Выйти из аккаунта') {
                     return (
-                        <button style={{color: 'red'}} className={styles.home_modal_button}>
+                        <button style={{color: 'red', fontWeight: 600}} className={styles.home_modal_button}>
                             {props.icon}
                             {props.text}
                         </button>

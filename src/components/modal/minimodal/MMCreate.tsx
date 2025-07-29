@@ -4,6 +4,7 @@ import styles from "../../../modules/Home.module.css";
 import {SvgIconProps} from "@mui/material";
 import CreatingContactModal from "../creating/CreatingContactModal";
 import CreatingGroupModal from "../creating/CreatingGroupModal";
+import {useTheme} from "../../context/ThemeContext";
 
 
 type MiniModalProps = {
@@ -20,12 +21,15 @@ const MMCreate: FC<MiniModalProps> = ({onClose, condition, buttonsProps, height,
 
     const [currentModalNext, setCurrentModalNext] = useState<string | null>(null);
 
+    const {theme} = useTheme()
+
+    const backModalCalculdate = theme === 'dark' ? 'linear-gradient(0deg,rgba(79, 3, 34, 1) 0%, rgba(56, 3, 28, 1) 100%)' : 'linear-gradient(0deg,rgba(76, 9, 171, 1) 0%, rgba(64, 9, 143, 1) 100%)'
 
     return (
         <Modal  style={{
             content: {
                 position: 'absolute',
-                background: 'linear-gradient(0deg,rgba(79, 3, 34, 1) 0%, rgba(56, 3, 28, 1) 100%)',
+                background: backModalCalculdate,
                 width: 220,
                 height: height || 90,
                 color: 'rgba(255,255,255,0.8)',
@@ -36,7 +40,7 @@ const MMCreate: FC<MiniModalProps> = ({onClose, condition, buttonsProps, height,
                 justifyContent: 'center',
                 alignItems: 'center',
                 flexDirection: 'column',
-                top: 60,
+                top: 70,
                 left: left,
                 padding: 0
             },
@@ -52,14 +56,6 @@ const MMCreate: FC<MiniModalProps> = ({onClose, condition, buttonsProps, height,
             <CreatingGroupModal onClose={() => setCurrentModalNext(null)} condition={currentModalNext === 'Создать группу'} left={'20'}/>
 
             {buttonsProps.map(props => {
-                if (props.text === 'Выйти из аккаунта') {
-                    return (
-                        <button style={{color: 'red'}} className={styles.home_modal_button}>
-                            {props.icon}
-                            {props.text}
-                        </button>
-                    )
-                }
                 return (
                     <button onClick={() => setCurrentModalNext(props.text)} className={styles.home_modal_button}>
                         {props.icon}

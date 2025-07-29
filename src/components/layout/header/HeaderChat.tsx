@@ -1,10 +1,15 @@
 import React, {FC} from 'react';
 import styles from "../../../modules/Chat.module.css";
+import {useTheme} from "../../context/ThemeContext";
 
 const HeaderChat: FC<{getUserpage: (id: string) => void}> = ({getUserpage}) => {
+
+    const {theme} = useTheme()
+    const colorP = theme === 'dark' ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.9)'
+    const colorDownP = theme === 'dark' ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)'
     return (
 
-            <div onClick={() => getUserpage('fff')} className={styles.header_chat}>
+            <div onClick={() => getUserpage('fff')} className={styles[`header_chat_${theme}`]}>
                 <div style={{
                     width: 45,
                     height: 45,
@@ -18,8 +23,8 @@ const HeaderChat: FC<{getUserpage: (id: string) => void}> = ({getUserpage}) => {
                     <p style={{color: 'white', fontWeight: 500, fontSize: 18}}>И</p>
                 </div>
                 <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'space-evenly'}}>
-                    <p style={{fontSize: 18, color: 'rgba(255,255,255,0.9)', fontWeight: 500, letterSpacing: 0.3}}>Иван</p>
-                    <p style={{fontSize: 15, color: 'rgba(255,255,255,0.6)'}}>был(а) недавно</p>
+                    <p style={{fontSize: 18, color: colorP, fontWeight: 500, letterSpacing: 0.3}}>Иван</p>
+                    <p style={{fontSize: 15, color: colorDownP}}>был(а) недавно</p>
                 </div>
             </div>
     );

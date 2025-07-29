@@ -8,6 +8,7 @@ import TitleIcon from '@mui/icons-material/Title';
 import ContactsContainer from "../../ContactsContainer";
 import {ContactPreviewProps} from "../../preview/ContactPreviewWithSelect";
 import {useSelectedContacts} from "../../context/selected/SelectedContactsProvider";
+import {useTheme} from "../../context/ThemeContext";
 type CreatingGroupModalProps = {
     onClose: () => void,
     condition: boolean,
@@ -18,6 +19,14 @@ type CreatingGroupModalProps = {
 
 
 const CreatingGroupModal: FC<CreatingGroupModalProps> = ({onClose, condition, height, left}) => {
+
+
+
+
+    const {theme} = useTheme()
+
+    const backModalCalculdate = theme === 'dark' ? 'linear-gradient(0deg,rgba(79, 3, 34, 1) 0%, rgba(56, 3, 28, 1) 100%)' : 'linear-gradient(0deg,rgba(76, 9, 171, 1) 0%, rgba(64, 9, 143, 1) 100%)'
+
 
     const [contacts, setContacts] = useState<ContactPreviewProps[]>([
         {id: 'Ivan1', color: 'orange', nickname: 'Иван'},
@@ -45,7 +54,7 @@ const CreatingGroupModal: FC<CreatingGroupModalProps> = ({onClose, condition, he
     return (
         <Modal style={{
             content: {
-                background: 'linear-gradient(0deg,rgba(79, 3, 34, 1) 0%, rgba(56, 3, 28, 1) 100%)',
+                background: backModalCalculdate,
                 width: 360,
                 height: height || 590,
                 color: 'rgba(255,255,255,0.8)',
@@ -75,7 +84,7 @@ const CreatingGroupModal: FC<CreatingGroupModalProps> = ({onClose, condition, he
                 marginBottom: 30,
             }}>Создание группы</p>
             <p style={{fontSize: 15, color: 'rgba(255,255,255,0.6)', marginBottom: 5}}>Название группы</p>
-            <p style={{fontSize: 13, color: 'red', marginBottom: 5}}>{empty && 'Поле не должно быть пустым!'}</p>
+            <p style={{fontSize: 13, color: 'red', marginBottom: 5, fontWeight: 600}}>{empty && 'Поле не должно быть пустым!'}</p>
             <div style={{
                 display: 'flex',
                 alignItems: 'center',
