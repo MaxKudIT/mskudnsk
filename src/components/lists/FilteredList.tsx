@@ -9,12 +9,12 @@ export type FilteredListProps = {
     input: string
 }
 
-const SortArrayFunc = (array: ChatPreviewProps[], type: FilterBy, inputValue: string) => {
-    if (type === 'chats') {
-        return array.filter(cp => cp.nickname === inputValue)
-    }
-    return array
-}
+// const SortArrayFunc = (array: ChatPreviewProps[], type: FilterBy, inputValue: string) => {
+//     if (type === 'chats') {
+//         return array.filter(cp => cp.nickname === inputValue)
+//     }
+//     return array
+// }
 
 
 const FilteredList: FC<FilteredListProps> = ({array, type, input}) => {

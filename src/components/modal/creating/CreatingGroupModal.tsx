@@ -29,12 +29,7 @@ const CreatingGroupModal: FC<CreatingGroupModalProps> = ({onClose, condition, he
 
 
     const [contacts, setContacts] = useState<ContactPreviewProps[]>([
-        {id: 'Ivan1', color: 'orange', nickname: 'Иван'},
-        {id: 'Egor1', color: 'purple', nickname: 'Егор'},
-        {id: 'Ivan2', color: 'orange', nickname: 'Иван'},
-        {id: 'Egor2', color: 'purple', nickname: 'Егор'},
-        {id: 'Ivan3', color: 'orange', nickname: 'Иван'},
-        {id: 'Egor3', color: 'purple', nickname: 'Егор'}
+
     ]);
     const [input, setInput] = useState('')
     const [empty, setEmpty] = useState(false)
@@ -105,7 +100,22 @@ const CreatingGroupModal: FC<CreatingGroupModalProps> = ({onClose, condition, he
                 columnGap: 5,
                 position: 'relative'
             }}>
-                <ContactsContainer withSelect={true} contacts={contacts}/>
+                {contacts.length !== 0 ? (
+                    // <ContactsContainer withSelect={true} contacts={contacts}/>
+                    <div></div>
+                ) : (
+                    <div style={{
+                        height: 300,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        fontSize: 19
+                    }} className={styles[`contacts_container_${theme}`]}>
+                        Контактов пока что нет!
+                    </div>
+                )}
+
+
 
             </div>
 

@@ -1,11 +1,12 @@
 import React, {FC} from 'react';
 import styles from "../modules/Modal.module.css";
 import ContactPreview from './preview/ContactPreview';
-import ContactPreviewWithSelect, {ContactPreviewProps} from "./preview/ContactPreviewWithSelect";
+import ContactPreviewWithSelect from "./preview/ContactPreviewWithSelect";
 import {useTheme} from "./context/ThemeContext";
+import {ContactPreviewRes} from "../dto/contact";
 
 type ContactsContainerProps = {
-    contacts: ContactPreviewProps[],
+    contacts: ContactPreviewRes[],
     height?: number,
     withSelect: boolean
 }
@@ -18,7 +19,7 @@ const ContactsContainer: FC<ContactsContainerProps> = ({contacts, height, withSe
         <div style={{height: height || 300}} className={styles[`contacts_container_${theme}`]}>
 
             {contacts.map(contact => (
-                <PreviewComponent id={contact.id} color={contact.color} nickname={contact.nickname}/>
+                <PreviewComponent id={contact.UserId} color={'red'} nickname={contact.Name}/>
             ))}
 
 

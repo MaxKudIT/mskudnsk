@@ -119,7 +119,7 @@
 .chat_input_light input::placeholder {
     color: rgba(0,0,0, 0.9);
 }
-.chat_message_my {
+.chat_message_my_dark {
     background: linear-gradient(0deg,rgba(133, 5, 54, 1) 0%, rgba(102, 5, 54, 0.8) 100%);
     padding: 10px 15px;
     border-radius: 15px;
@@ -130,8 +130,37 @@
     word-break: break-word;
 }
 
-.chat_message_participant {
-    background: linear-gradient(0deg,rgba(64, 64, 64, 0.9) 0%, rgba(61, 61, 61, 0.8) 100%);
+.chat_message_my_light {
+    background: linear-gradient(0deg,rgba(223, 201, 255, 0.8) 0%, rgba(217, 191, 255, 1) 100%);
+    background: rgba(217,191,255,0.9);
+    padding: 10px 15px;
+    border-radius: 15px;
+    align-self: flex-end;
+    column-gap: 7px;
+    min-width: 0;
+    max-width: 80%;
+    word-break: break-word;
+}
+
+
+
+
+
+
+.chat_message_participant_dark {
+    background: rgba(40,40,40,0.9);
+    padding: 10px 15px;
+    border-radius: 15px;
+    align-self: flex-start;
+    column-gap: 7px;
+    min-width: 0;
+    max-width: 80%;
+    word-break: break-word;
+}
+
+
+.chat_message_participant_light {
+    background: rgba(255,255,255,0.9);
     padding: 10px 15px;
     border-radius: 15px;
     align-self: flex-start;

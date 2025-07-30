@@ -1,10 +1,13 @@
-import React, {FC, ReactElement, useState} from 'react';
+import React, {FC, ReactElement, useEffect, useState} from 'react';
 import Modal from "react-modal";
 import PhoneIcon from '@mui/icons-material/Phone';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ContactsContainer from "../../ContactsContainer";
-import {ContactPreviewProps} from "../../preview/ContactPreviewWithSelect";
 import {useTheme} from "../../context/ThemeContext";
+import styles from "../../../modules/Modal.module.css";
+import {useDefaultGet} from "../../../hooks/getQueries";
+import {ContactPreviewRes} from "../../../dto/contact";
+import {CircularProgress} from "@mui/material";
 type MiniModalProps = {
     onClose: () => void,
     condition: boolean,
@@ -13,20 +16,33 @@ type MiniModalProps = {
 
 }
 
+
 const ViewingMyContacts: FC<MiniModalProps> = ({onClose, condition, height, left}) => {
 
     const {theme} = useTheme()
 
+    const [contacts, setContacts] = useState<ContactPreviewRes[]>([]);
+    const [error, setError] = useState('')
+    const {loading, get} = useDefaultGet<{Contacts: ContactPreviewRes[]}>()
+    useEffect(() => {
+        const getData = async () => {
+            const res = await get('contacts/all')
+            if (res.error) {
+                setError(res.error)
+            }
+            else {
+                if (res.data) {
+                    setContacts(res.data.Contacts)
+                }
+
+            }
+        }
+        getData()
+
+    }, []);
     const backModalCalculdate = theme === 'dark' ? 'linear-gradient(0deg,rgba(79, 3, 34, 1) 0%, rgba(56, 3, 28, 1) 100%)' : 'linear-gradient(0deg,rgba(76, 9, 171, 1) 0%, rgba(64, 9, 143, 1) 100%)'
 
-    const [contacts, setContacts] = useState<ContactPreviewProps[]>([
-        {id: 'Ivan1', color: 'orange', nickname: 'Иван'},
-        {id: 'Egor1', color: 'purple', nickname: 'Егор'},
-        {id: 'Ivan2', color: 'orange', nickname: 'Иван'},
-        {id: 'Egor2', color: 'purple', nickname: 'Егор'},
-        {id: 'Ivan3', color: 'orange', nickname: 'Иван'},
-        {id: 'Egor3', color: 'purple', nickname: 'Егор'}
-    ]);
+
     return (
         <Modal style={{
             content: {
@@ -61,9 +77,42 @@ const ViewingMyContacts: FC<MiniModalProps> = ({onClose, condition, height, left
                     letterSpacing: 0.1,
                 }}>Мои контакты</p>
 
+            {error !== '' ? (
+                <div style={{
+                    height: '90%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    fontSize: 19,
+                    textAlign: 'center',
+                    color: theme === 'dark' ? '#E50A5E' : 'white'
+                }} className={styles[`contacts_container_${theme}`]}>
+                    {error}
+                </div>
+            ) : loading ? (
+                <div style={{
+                    height: '90%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    fontSize: 19
+                }} className={styles[`contacts_container_${theme}`]}>
+                    <CircularProgress sx={{color: theme === 'dark' ? '#E50A5E' : 'white'}} size={30}/>
+                </div>
+            ) : contacts.length !== 0 ? (
+                <ContactsContainer withSelect={false} height={400} contacts={contacts}/>
+            ) : (
+                <div style={{
+                    height: '90%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    fontSize: 19
+                }} className={styles[`contacts_container_${theme}`]}>
+                    Контактов пока что нет!
+                </div>
+                )}
 
-
-            <ContactsContainer withSelect={false} height={400} contacts={contacts}/>
         </Modal>
     );
 };

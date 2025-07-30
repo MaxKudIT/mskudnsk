@@ -10,7 +10,7 @@ import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import {SelectedProvider} from "./components/context/selected/SelectedProvider";
 import {SelectedContactsProvider} from "./components/context/selected/SelectedContactsProvider";
-import {SelectedMiniPopupProvider} from "./components/context/selected/SelectedMiniPopupProvider";
+import {SelectedPopupsProvider} from "./components/context/selected/SelectedPopupsProvider";
 import {ThemeProvider} from "./components/context/ThemeContext";
 
 
@@ -66,13 +66,13 @@ const router = createBrowserRouter([{
 root.render(
   <Provider store={store}>
       <ThemeProvider>
-          <SelectedMiniPopupProvider>
+          <SelectedPopupsProvider>
               <SelectedProvider>
                   <SelectedContactsProvider>
                       <RouterProvider router={router}/>
                   </SelectedContactsProvider>
               </SelectedProvider>
-          </SelectedMiniPopupProvider>
+          </SelectedPopupsProvider>
       </ThemeProvider>
 
 

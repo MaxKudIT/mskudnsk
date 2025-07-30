@@ -2,6 +2,8 @@ import React, {FC} from 'react';
 import styles from "../../../modules/Chat.module.css";
 import {useTheme} from "../../context/ThemeContext";
 
+
+
 const HeaderChat: FC<{getUserpage: (id: string) => void}> = ({getUserpage}) => {
 
     const {theme} = useTheme()

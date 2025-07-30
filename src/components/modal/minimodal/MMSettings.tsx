@@ -6,6 +6,7 @@ import {useTheme} from "../../context/ThemeContext";
 import Switch from "react-switch";
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
+import {setStorageItem} from "../../../utlis/localstorage";
 type MiniModalProps = {
     onClose: () => void,
     condition: boolean,
@@ -33,9 +34,12 @@ const MMSettings: FC<MiniModalProps> = ({onClose, condition, buttonsProps, heigh
             case "Тема":
                 if (theme === 'light') {
                     setTheme('dark')
+                    setStorageItem('theme', 'dark');
                 } else {
                     setTheme('light')
+                    setStorageItem('theme', 'light');
                 }
+                break;
         }
     }
 

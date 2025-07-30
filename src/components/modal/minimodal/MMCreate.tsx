@@ -5,6 +5,7 @@ import {SvgIconProps} from "@mui/material";
 import CreatingContactModal from "../creating/CreatingContactModal";
 import CreatingGroupModal from "../creating/CreatingGroupModal";
 import {useTheme} from "../../context/ThemeContext";
+import {useSelectedPopups} from "../../context/selected/SelectedPopupsProvider";
 
 
 type MiniModalProps = {
@@ -19,7 +20,11 @@ type MiniModalProps = {
 
 const MMCreate: FC<MiniModalProps> = ({onClose, condition, buttonsProps, height, left}) => {
 
-    const [currentModalNext, setCurrentModalNext] = useState<string | null>(null);
+
+
+
+    const {selectedPopups, downSelectedPopup, upSelectedPopup} = useSelectedPopups()
+
 
     const {theme} = useTheme()
 
@@ -36,7 +41,7 @@ const MMCreate: FC<MiniModalProps> = ({onClose, condition, buttonsProps, height,
                 fontSize: 18,
                 borderRadius: 10,
                 border: 'none',
-                display: currentModalNext !== null ? 'none' : 'flex',
+                display: selectedPopups[1] !== undefined ? 'none' : 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 flexDirection: 'column',
@@ -52,12 +57,12 @@ const MMCreate: FC<MiniModalProps> = ({onClose, condition, buttonsProps, height,
             }
         }} onRequestClose={onClose} isOpen={condition}>
 
-            <CreatingContactModal onClose={() => setCurrentModalNext(null)} condition={currentModalNext === 'Добавить контакт'} left={'20'}/>
-            <CreatingGroupModal onClose={() => setCurrentModalNext(null)} condition={currentModalNext === 'Создать группу'} left={'20'}/>
+            <CreatingContactModal onClose={() => downSelectedPopup()} condition={selectedPopups[1] === 'Добавить контакт'} left={'20'}/>
+            <CreatingGroupModal onClose={() => downSelectedPopup()} condition={selectedPopups[1] === 'Создать группу'} left={'20'}/>
 
             {buttonsProps.map(props => {
                 return (
-                    <button onClick={() => setCurrentModalNext(props.text)} className={styles.home_modal_button}>
+                    <button onClick={() => upSelectedPopup(props.text)} className={styles.home_modal_button}>
                         {props.icon}
                         {props.text}
                     </button>

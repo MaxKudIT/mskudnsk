@@ -1,13 +1,16 @@
-import React, {ComponentType, FC, JSX, ReactElement, ReactNode, useState} from 'react';
+import React, {ComponentType, FC, JSX, ReactElement, ReactNode, useEffect, useState} from 'react';
 import Modal from "react-modal";
 import styles from "../../../modules/Modal.module.css";
-import {SvgIconProps} from "@mui/material";
+import {CircularProgress, SvgIconProps} from "@mui/material";
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import {Input} from 'antd'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {ValidatePhoneFormat} from "../../../utlis/validate";
 import {formatInput} from "../../../utlis/formatting";
 import {useTheme} from "../../context/ThemeContext";
+import {useDefaultPost} from "../../../hooks/postQueries"
+import Swal from "sweetalert2";
+import {useSelectedPopups} from "../../context/selected/SelectedPopupsProvider";
 type CreatingContactModalProps = {
     onClose: () => void,
     condition: boolean,
@@ -24,8 +27,12 @@ const CreatingContactModal: FC<CreatingContactModalProps> = ({onClose, condition
     const [errormsg, setErrormsg] = useState('')
 
     const {theme} = useTheme()
+    const {clearSelectedPopups} = useSelectedPopups()
 
     const backModalCalculdate = theme === 'dark' ? 'linear-gradient(0deg,rgba(79, 3, 34, 1) 0%, rgba(56, 3, 28, 1) 100%)' : 'linear-gradient(0deg,rgba(76, 9, 171, 1) 0%, rgba(64, 9, 143, 1) 100%)'
+
+    const {loading, post} = useDefaultPost()
+
 
 
     return (
@@ -72,14 +79,54 @@ const CreatingContactModal: FC<CreatingContactModalProps> = ({onClose, condition
                     setInput(formatInput(e.target.value))
                 }} className={styles.input_modal}/>
             </div>
-            <AddCircleIcon onClick={() => {
-                const result = ValidatePhoneFormat(input);
-                if (result.validMessage) {
-                    setErrormsg(result.validMessage)
-                } else {
-                    setErrormsg('')
-                }
-            }}  className={styles.buttons_modal} style={{alignSelf: 'center', position: 'absolute', top: 200, fontSize: 55}} />
+            {loading ? (
+                <div style={{
+                    marginTop: 'auto',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginBottom: 20
+                }}>
+                    <CircularProgress sx={{color: theme === 'dark' ? '#E50A5E' : 'white'}} size={30}/>
+                </div>
+
+            ) : (
+                <AddCircleIcon onClick={async () => {
+                    const result = ValidatePhoneFormat(input);
+                    if (result.validMessage) {
+                        setErrormsg(result.validMessage)
+                    } else {
+                        setErrormsg('')
+                        const data = await post('contacts/add', {PhoneNumber: result.normalizedPhone})
+                        if (data.error) {
+                            if (theme === "dark") {
+                                Swal.fire({
+                                    html: `<div style="text-align: left; margin: 5px 0; color: #fff">$${data.error}</div>`,
+                                    position: 'center',
+                                    icon: 'error',
+                                    background: '#242424',
+                                    color: '#9C0852',
+                                    iconColor: '#E50A5E',
+                                    confirmButtonColor: '#E50A5E'
+                                });
+                            } else {
+                                Swal.fire({
+                                    html: `<div style="text-align: left; margin: 5px 0; color: white">$${data.error}</div>`,
+                                    position: 'center',
+                                    icon: 'error',
+                                    background: 'linear-gradient(0deg,rgba(76, 9, 171, 1) 0%, rgba(64, 9, 143, 1) 100%)',
+                                    color: '#9C0852',
+                                    iconColor: 'white',
+                                    confirmButtonColor: 'purple',
+                                });
+                            }
+
+                        } else {
+                            clearSelectedPopups()
+                        }
+                    }
+                }}  className={styles.buttons_modal} style={{alignSelf: 'center', position: 'absolute', top: 200, fontSize: 55}} />
+            )}
+
         </Modal>
     );
 };

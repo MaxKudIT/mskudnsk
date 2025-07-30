@@ -2,7 +2,7 @@ import React, {FC, useState} from 'react';
 import styles from "../../modules/Modal.module.css";
 import {useSelectedContacts} from "../context/selected/SelectedContactsProvider";
 import {useSelected} from "../context/selected/SelectedProvider";
-import {useSelectedMiniPopup} from "../context/selected/SelectedMiniPopupProvider";
+import {useSelectedPopups} from "../context/selected/SelectedPopupsProvider";
 
 
 export type ContactPreviewProps = {
@@ -16,11 +16,11 @@ export type ContactPreviewProps = {
 
 const ContactPreview: FC<ContactPreviewProps> = ({color, nickname, id}) => {
     const {setSelectedChatId} = useSelected()
-    const {setSelectedMiniPopup} = useSelectedMiniPopup()
+    const {clearSelectedPopups} = useSelectedPopups()
     return (
         <div onClick={() => {
             setSelectedChatId('chat1');
-            setSelectedMiniPopup(null)
+            clearSelectedPopups()
         }} className={styles.contact_preview}>
             <div style={{width: 45,
                 height: 45,

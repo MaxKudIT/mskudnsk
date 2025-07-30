@@ -10,7 +10,7 @@ import GroupTwoToneIcon from '@mui/icons-material/GroupTwoTone';
 import StarBorderPurple500TwoToneIcon from '@mui/icons-material/StarBorderPurple500TwoTone';
 import ChatBubbleOutlineTwoToneIcon from '@mui/icons-material/ChatBubbleOutlineTwoTone';
 import {SvgIconProps} from "@mui/material";
-import {useSelectedMiniPopup} from "../../context/selected/SelectedMiniPopupProvider";
+import {useSelectedPopups} from "../../context/selected/SelectedPopupsProvider";
 import {useTheme} from "../../context/ThemeContext";
 
 
@@ -29,7 +29,7 @@ const HeaderHome: FC<HeaderProps> = ({actions}) => {
 
     const {theme} = useTheme()
 
-    const {setSelectedMiniPopup} = useSelectedMiniPopup()
+    const {upSelectedPopup} = useSelectedPopups()
 
     const ChoiceReactElement = (index: number): ReactElement<SvgIconProps> => {
         if (index > 3) {
@@ -68,13 +68,13 @@ const HeaderHome: FC<HeaderProps> = ({actions}) => {
             }}>
 
                 <AddCircleOutlineIcon onClick={() => {
-                   setSelectedMiniPopup('create_mini_popup')
+                   upSelectedPopup('create_mini_popup')
                 }} fontSize={'large'} className={styles[`home_buttons_${theme}`]}/>
                 <AccountCircleIcon  onClick={() => {
-                    setSelectedMiniPopup('profile_mini_popup')
+                    upSelectedPopup('profile_mini_popup')
                 }} fontSize={'large'} className={styles[`home_buttons_${theme}`]}/>
                 <SettingsIcon onClick={() => {
-                    setSelectedMiniPopup('settings_mini_popup')
+                    upSelectedPopup('settings_mini_popup')
                 }} fontSize={'large'} className={styles[`home_buttons_${theme}`]}/>
             </div>
 

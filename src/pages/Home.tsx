@@ -11,26 +11,64 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import LanguageIcon from '@mui/icons-material/Language';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MMCreate from "../components/modal/minimodal/MMCreate";
-import {ChatPreviewProps, ChatPreviewT} from "../components/preview/ChatPreview";
 import ContactsIcon from '@mui/icons-material/Contacts';
 import {useSelected} from "../components/context/selected/SelectedProvider";
 import Chat from "../components/Chat";
 import ViewModal from "../components/modal/ViewModal";
 import MMmyAcc from "../components/modal/minimodal/MMmyAcc";
 import MMSettings from "../components/modal/minimodal/MMSettings";
-import {useSelectedMiniPopup} from "../components/context/selected/SelectedMiniPopupProvider";
-import {useTheme} from "../components/context/ThemeContext";
+import {useSelectedPopups} from "../components/context/selected/SelectedPopupsProvider";
+import {ThemeType, useTheme} from "../components/context/ThemeContext";
 import Switch from 'react-switch';
 import {FaSun} from "react-icons/fa";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import {getStorageItem} from "../utlis/localstorage";
+import { GroupPreviewT } from "../components/preview/GroupPreview";
+import Group from "../components/Group";
+import {CircularProgress} from "@mui/material";
+import {useDefaultGet} from "../hooks/getQueries";
+import {ChatPreviewsRes} from "../dto/chat";
+import {ContactPreviewRes} from "../dto/contact";
+
 
 const Home = () =>
 {
     //просто тест toggle
+
+
     const {theme, setTheme} = useTheme()
 
+    const {loading, get} = useDefaultGet<{previews: ChatPreviewsRes[]}>()
+
+    const [previews,setPreviews] = useState<ChatPreviewsRes[]>([]);
+    const [error, setError] = useState('')
+
+
+    useEffect(() => {
+        const getData = async () => {
+            const res = await get('chat/all')
+            if (res.error) {
+                setError(res.error)
+            }
+            else {
+                if (res.data) {
+                   setPreviews(res.data.previews)
+                }
+
+            }
+        }
+        getData()
+    }, []);
+
+    useEffect(() => {
+        const savedTheme = getStorageItem<ThemeType>('theme')
+        if (savedTheme !== null) {
+            setTheme(savedTheme)
+        }
+    }, []);
 
     const {selectedChatId, setSelectedChatId} = useSelected()
-    const {selectedMiniPopup, setSelectedMiniPopup} = useSelectedMiniPopup()
+    const {selectedPopups, downSelectedPopup, skipModals} = useSelectedPopups()
     const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'Escape') {
             setSelectedChatId(null)
@@ -39,29 +77,20 @@ const Home = () =>
 
     useEffect(() => {
         document.addEventListener('keydown', handleKeyDown);
+
+
+
+
+
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         };
+
     }, []);
 
 
 
-    const [chats, setChats] = useState<ChatPreviewT[]>([{
-        date: new Date(),
-        nickname: 'Иван',
-        color: 'orange',
-        lastMessage: {text: 'Привет, ты как вообще?', isMy: false, countUnReadMessages: 1},
-        id: 'chat1'}, {
-        date: new Date(),
-        nickname: 'Никита',
-        color: 'green',
-        lastMessage: {text: 'Ты сделал практику?', isMy: true, isRead: false},
-        id: 'chat2'}, {
-        date: new Date(),
-        nickname: 'Егор',
-        color: 'purple',
-        lastMessage: {text: 'Когда приедешь?', isMy: true, isRead: false},
-        id: 'chat3'}])
+
 
 
 
@@ -90,31 +119,53 @@ const Home = () =>
           <div className={styles[`main_container_${theme}`]}>
             <MMCreate
                 left={selectedChatId !== null ? '20%' : '45%'}
-                onClose={() => setSelectedMiniPopup(null)}
-                condition={selectedMiniPopup === 'create_mini_popup'}
+                onClose={() => downSelectedPopup()}
+                condition={selectedPopups[0] === 'create_mini_popup'}
                 buttonsProps={[{text: 'Создать группу', icon: <GroupAddIcon fontSize={'small'} style={{color: 'white'}}/>}, {text: 'Добавить контакт', icon: <PersonAddAltIcon fontSize={'small'} style={{color: 'white'}}/>}]}/>
             <MMmyAcc
                 left={selectedChatId !== null ? '21%' : '46%'}
-                onClose={() => setSelectedMiniPopup(null)}
-                condition={selectedMiniPopup === 'profile_mini_popup'}
+                onClose={() => downSelectedPopup()}
+                condition={selectedPopups[0] === 'profile_mini_popup'}
                 height={120}
                 buttonsProps={[{text: 'Мой аккаунт', icon: <AccountBoxIcon fontSize={'small'} style={{color: 'white'}}/>}, {text: 'Контакты', icon: <ContactsIcon fontSize={'small'} style={{color: 'white'}}/>}, {text: 'Выйти из аккаунта', icon: <LogoutIcon fontSize={'small'} style={{color: 'red'}}/>}]}/>
             <MMSettings
                 left={selectedChatId !== null ? '22%' : '47%'}
-                onClose={() => setSelectedMiniPopup(null)}
-                condition={selectedMiniPopup === 'settings_mini_popup'}
+                onClose={() => downSelectedPopup()}
+                condition={selectedPopups[0] === 'settings_mini_popup'}
                 height={90}
                 buttonsProps={[{text: 'Тема', icon: <DarkModeIcon fontSize={'small'} style={{color: 'white'}}/>},  {text: 'Уведомления', icon: <NotificationsIcon fontSize={'small'} style={{color: 'white'}}/>}]}/>
             <HeaderHome actions={{getInputValue: getInputValue, getChoiceIndex: getChoiceIndex}}/>
-            {input.length === 0 ? (
-                <ChatList chats={chats} />
-            ) : (
-                // FilteredListLogic(array, choiceindex)
-                <p></p>
+              {error !== '' ? (
+                  <div style={{display: 'flex', justifyContent: 'center', marginTop: 90, textAlign: 'center', color: 'purple'}}>
+                      {error}
+                  </div>
+              ) : loading ? (
+                  <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 250}}>
+                      <CircularProgress sx={{color: '#E50A5E'}} size={30}/>
+                  </div>
+              ) : previews.length !== 0 ? (
+                  <ChatList chats={previews}/>
+              ) : (
+                <div style={{
+                    height: '100%',
+                    padding: '0 10px',
+                    marginTop: 30,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    rowGap: 10
+                }}>
+                    <p style={{textAlign: 'center', fontSize: 18, color: theme === 'dark' ? '#E50A5E' : 'purple', fontWeight: 500}}>Чатов пока что нет, но вы можете это исправить!</p>
+                    <PersonAddAltIcon onClick={() => {
+                        skipModals('create_mini_popup', 'Добавить контакт')
+                    }} style={{fontSize: 35, color: theme === 'dark' ? '#E50A5E' : 'purple'}}/>
+
+                </div>
             )}
 
         </div>
-          {selectedChatId !== null && <Chat />}
+
+          {selectedChatId !== null && <Group/>}
 
 
       </div>

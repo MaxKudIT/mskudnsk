@@ -25,3 +25,4 @@ export const useDefaultGet = <Res>(): ReturnHookType<Res> => {
 
     return {loading, get}
 }
+
