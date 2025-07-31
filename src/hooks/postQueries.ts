@@ -12,7 +12,7 @@ export const useDefaultPost = <Req, Res>(): ReturnHookType<Req, Res> => {
     const post = async (url: string, dataArg: Req): Promise<{error: string | null, data: Res | null}>  => {
         try {
              setLoading(true)
-             const res = await v1.post<Res>(url, dataArg)
+             const res = await v1.post<Res>(url, dataArg, {withCredentials: true})
             return {error: null, data: res.data}
         }
         catch (e: any) {
