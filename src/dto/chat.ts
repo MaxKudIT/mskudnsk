@@ -7,7 +7,7 @@ export interface ChatPreviewsRes {
     MessageMeta: {
         Content: string
         IsRead: boolean
-        CreatedAt: Date
+        CreatedAt: Date | string
         IsMy: boolean
         SenderId: string
         UnReadMessages: string[]
@@ -22,3 +22,6 @@ export interface ChatHeaderRes {
     AvatarUrl: string
     Status: boolean
 }
+
+
+

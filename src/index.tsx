@@ -17,10 +17,15 @@ import {ThemeProvider} from "./components/context/ThemeContext";
 
 export const SelectedContext = createContext<{
     selectedChatId: string | null,
-    setSelectedChatId: (id: string | null) => void}
+    setSelectedChatId: (chatId: string | null) => void,
+    participantId: string | null,
+    setParticipantId: (participant: string | null) => void
+}
 >({
     selectedChatId: null,
-    setSelectedChatId: (id: string | null) => {}
+    setSelectedChatId: (id: string | null) => {},
+    participantId: null,
+    setParticipantId: (ptcp: string | null) => {},
 })
 
 export const SelectedContactsContext = createContext<{

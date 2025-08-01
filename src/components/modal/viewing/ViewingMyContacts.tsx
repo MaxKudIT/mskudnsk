@@ -32,6 +32,7 @@ const ViewingMyContacts: FC<MiniModalProps> = ({onClose, condition, height, left
             }
             else {
                 if (res.data) {
+                    console.log(res.data)
                     setContacts(res.data.Contacts)
                 }
 

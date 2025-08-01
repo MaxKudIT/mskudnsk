@@ -9,9 +9,15 @@ export const SelectedProvider: FC<{children: ReactNode}> = ({children}) => {
         setSelected(id)
     }
 
+    const [participantId, setPtcp] = useState<string | null>(null)
+
+    const setParticipantId = (id: string | null) => {
+        setPtcp(id)
+    }
+
 
     return (
-        <SelectedContext.Provider value={{selectedChatId: selected, setSelectedChatId}}>
+        <SelectedContext.Provider value={{selectedChatId: selected, setSelectedChatId, participantId, setParticipantId}}>
             {children}
         </SelectedContext.Provider>
     );

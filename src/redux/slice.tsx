@@ -14,6 +14,12 @@ const initialState: RegistrationData = {
     alias: '',
 }
 
+export type UserData = {
+    Id: string
+}
+const initialState2: UserData = {
+    Id: ''
+}
 
 
 
@@ -29,6 +35,18 @@ export const registrationSlice = createSlice({
   },
 });
 
+export const userDataSlice = createSlice({
+    name: 'userData_slice',
+    initialState: initialState2,
+    reducers: {
+       setUserId: (state, action: PayloadAction<string>) => {
+           state.Id = action.payload
+       }
+    },
+});
+
 
 export const { setRegData } = registrationSlice.actions;
-export default registrationSlice.reducer;
+export const {setUserId } = userDataSlice.actions
+export const {reducer: registrationReducer} = registrationSlice;
+export const {reducer: userDataReducer} = userDataSlice;

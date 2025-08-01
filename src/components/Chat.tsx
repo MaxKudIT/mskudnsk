@@ -8,33 +8,51 @@ import ViewModal from "./modal/ViewModal";
 import {useTheme} from "./context/ThemeContext";
 import {useDefaultGet} from "../hooks/getQueries";
 import {ChatHeaderRes} from "../dto/chat";
-import {ChatMessageRes} from "../dto/message";
+import {ChatMessageReq, ChatMessageRes} from "../dto/message";
 import {ContactPreviewRes} from "../dto/contact";
+import {useDefaultPost} from "../hooks/postQueries";
+import {useSelected} from "./context/selected/SelectedProvider";
+import {CircularProgress} from "@mui/material";
+import {RootState} from "../redux/store";
+import { useSelector } from 'react-redux';
+import MessageWrapperParticipant from "./MessageWrapperParticipant";
+import {v4} from "uuid";
+import {UserRes} from "../dto/user";
 
 
 
 export type ChatType = {
     headerdata: ChatHeaderRes
-    messages: ChatMessageRes,
+    messages: ChatMessageRes[],
     chat: string
 }
 
 
 const Chat = () => {
 
-    const {theme} = useTheme()
+    const Id = sessionStorage.getItem('userdata');
 
-    const {loading, get} = useDefaultGet<ChatType>()
+    const {theme} = useTheme()
+    const {participantId, selectedChatId} = useSelected()
+
+    const {loading, post} = useDefaultPost<{Idtwo: string}, ChatType>()
+
+    const {loading: loadingMessage, post: postMessage} = useDefaultPost<ChatMessageReq, {messageid: string}>()
+
     const [chatProps, setChatProps] = useState<ChatType>();
     const [error, setError] = useState('')
+
+
+
     useEffect(() => {
         const getData = async () => {
-            const res = await get('chat/find')
+            const res = await post('chat/find', {Idtwo: participantId!})
             if (res.error) {
                 setError(res.error)
             }
             else {
                 if (res.data) {
+                    console.log(res.data)
                     setChatProps(res.data)
                 }
 
@@ -44,15 +62,23 @@ const Chat = () => {
 
     }, []);
 
-    const [msgs, setMsgs] = useState<string[]>([])
-    const getInputValue = (value: string) => {
-        setMsgs(prev => [...prev, value])
+    const getInputValue = (message: ChatMessageRes) => {
+        setChatProps(prev => {
+            if (prev) {
+                if (prev?.messages) {
+                    return {...prev, messages: [...prev.messages, message]}
+                } else {
+                    return {...prev, messages: [message]}
+                }
+            }
+
+        })
     }
 
 
-    const [userpage, setUserpage] = useState<string | null>(null)
-    const getUserpage = (id: string) => {
-        setUserpage(id)
+    const [userpage, setUserpage] = useState<UserRes | null>(null)
+    const getUserpage = (data: UserRes) => {
+        setUserpage(data)
     }
     return (
         <div className={styles.chat_body}>
@@ -60,44 +86,113 @@ const Chat = () => {
                 left={'20%'}
                 onClose={() => setUserpage(null)}
                 condition={userpage !== null}
-                user={{nickname: 'Иван', color: 'orange', phonenumber: '7 900 105 80-15'}}
+                user={userpage !== null ? {nickname: userpage.Name, phonenumber: userpage.PhoneNumber, color: 'orange'} : {nickname: 'Пусто', phonenumber: 'Пусто', color: 'red'}}
             />
-        <HeaderChat getUserpage={getUserpage}/>
+            {chatProps?.headerdata ? (
+                <HeaderChat Name={chatProps.headerdata.Name} Status={chatProps.headerdata.Status} AvatarUrl={chatProps.headerdata.AvatarUrl} Id={chatProps.headerdata.Id} getUserpage={getUserpage}/>
+            ) : (
+                <HeaderChat Name={'Призрак'} Status={false} AvatarUrl={'a'} Id={'a'} getUserpage={getUserpage}/>
+            )}
 
-            <div className={styles[`chat_messages_body_${theme}`]}>
-                {msgs.length !== 0 ? (
-                    <div className={styles.chat_messages_container}>
-                        {msgs.map(message => (
-                            <MessageWrapperMy corrType={'chat'} content={message}/>
-                        ))}
+            {error ? (
+                <p>Ошибка</p>
+            ) : loading ? (
+                <CircularProgress/>
+            ) : (
+                <>
+                    <div className={styles[`chat_messages_body_${theme}`]}>
+                        {chatProps?.messages.length !== 0 ? (
+                            <div className={styles.chat_messages_container}>
+                                {chatProps?.messages.map(message => {
+                                  if (message.SenderId === Id) {
+                                      return ( <MessageWrapperMy
+                                          CorrespondenceType={message.CorrespondenceType}
+                                          Id={message.Id}
+                                          ChatId={message.ChatId}
+                                          Type={message.Type}
+                                          Content={message.Content}
+                                          SenderId={message.SenderId}
+                                          ReadAt={message.ReadAt}
+                                          CreatedAt={message.CreatedAt}
+                                          UpdatedAt={message.UpdatedAt}
+                                      />)
+                                  } else {
+                                      return  ( <MessageWrapperParticipant
+                                          CorrespondenceType={message.CorrespondenceType}
+                                          Id={message.Id}
+                                          ChatId={message.ChatId}
+                                          Type={message.Type}
+                                          Content={message.Content}
+                                          SenderId={message.SenderId}
+                                          ReadAt={message.ReadAt}
+                                          CreatedAt={message.CreatedAt}
+                                          UpdatedAt={message.UpdatedAt}
+                                      />)
+                                  }
+                                }
+
+                                )}
+                            </div>
+                        ) : (
+                            <div onClick={async () => {
+                                const messageDTO: ChatMessageReq = {
+                                    Content: 'Привет',
+                                    CorrespondenceType: 'chat',
+                                    ChatId: selectedChatId!,
+                                    SenderId: Id!,
+                                    Id: v4(),
+                                    Type: 'text',
+                                    RecieverId: participantId!
+                                }
+                                const message: ChatMessageRes = {
+                                    Content: 'Привет',
+                                    CorrespondenceType: 'chat',
+                                    ChatId: selectedChatId!,
+                                    SenderId: Id!,
+                                    Id: v4(),
+                                    Type: 'text',
+                                    CreatedAt: new Date(),
+                                    UpdatedAt: new Date(),
+                                    ReadAt: null
+                                }
+                                const req = await postMessage('/cm/create', messageDTO)
+                                if (req.error) {
+                                    setError(req.error)
+                                } else {
+                                    getInputValue(message)
+                                    }
+
+
+                            }} style={{
+                                marginTop: '30vh',
+                                alignSelf: 'center',
+                                width: 250,
+                                height: 200,
+                                background: theme === 'dark' ? 'rgba(150,150,150,0.2)' : 'rgba(150,150,150,0.3)',
+                                borderRadius: 20,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                rowGap: 20,
+                                flexDirection: 'column'
+                            }}>
+                                <p style={{color: theme === 'dark' ? 'rgba(255,255,255,0.9)' : 'purple', fontWeight: 500, fontSize: 22, textAlign: 'center'}}>Начните общение прямо сейчас!</p>
+                                <p style={{color: theme === 'dark' ? 'rgba(255,255,255,0.9)' : 'purple', fontWeight: 500, fontSize: 18}}>Привет</p>
+                            </div>
+                        )}
+
+
+
                     </div>
-                ) : (
-                    <div onClick={() => {
-                        setMsgs(prev => [...prev, 'Привет'])
-                    }} style={{
-                        marginTop: '30vh',
-                        alignSelf: 'center',
-                        width: 250,
-                        height: 200,
-                        background: theme === 'dark' ? 'rgba(150,150,150,0.2)' : 'rgba(150,150,150,0.3)',
-                        borderRadius: 20,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        rowGap: 20,
-                        flexDirection: 'column'
-                    }}>
-                        <p style={{color: theme === 'dark' ? 'rgba(255,255,255,0.9)' : 'purple', fontWeight: 500, fontSize: 22, textAlign: 'center'}}>Начните общение прямо сейчас!</p>
-                        <p style={{color: theme === 'dark' ? 'rgba(255,255,255,0.9)' : 'purple', fontWeight: 500, fontSize: 18}}>Привет</p>
-                    </div>
-                )}
+                    <ChatInput getInputValue={getInputValue}/>
+
+                </>
 
 
-
-            </div>
-            <ChatInput getInputValue={getInputValue}/>
+            )}
         </div>
-    );
+         )
+
 };
 
 export default Chat;

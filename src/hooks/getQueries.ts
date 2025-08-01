@@ -12,7 +12,7 @@ export const useDefaultGet = <Res>(): ReturnHookType<Res> => {
     const get = async (url: string): Promise<{error: string | null, data: Res | null}>  => {
         try {
              setLoading(true)
-             const res = await v1.get<Res>(url)
+             const res = await v1.get<Res>(url, {withCredentials: true})
             return {error: null, data: res.data}
         }
         catch (e: any) {

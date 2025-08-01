@@ -1,8 +1,9 @@
 import React, {FC} from 'react';
 import {useTheme} from "./context/ThemeContext";
 import styles from '../modules/Chat.module.css'
+import {ChatMessageRes} from "../dto/message";
 
-const MessageWrapperParticipant: FC<{content: string}> = ({content}) => {
+const MessageWrapperParticipant: FC<ChatMessageRes> = ({ChatId, Content, Id, ReadAt, Type, SenderId, UpdatedAt, CreatedAt, CorrespondenceType}) => {
 
     const {theme} = useTheme()
 
@@ -25,10 +26,10 @@ const MessageWrapperParticipant: FC<{content: string}> = ({content}) => {
             fontSize: 18
         }}>G</div>
         <div onClick={() => {
-            navigator.clipboard.writeText(content)
+            navigator.clipboard.writeText(Content)
         }} className={styles[`chat_message_participant_${theme}`]}>
             <p style={{color: '#E50A5E', fontWeight: 600}}>GTR989</p>
-            <p style={{color: theme === 'dark' ? 'white' : 'black', fontSize: 18, letterSpacing: 0.1}}>{content}</p>
+            <p style={{color: theme === 'dark' ? 'white' : 'black', fontSize: 18, letterSpacing: 0.1}}>{Content}</p>
             <div style={{
                 color: 'rgba(255,255,255, 0.8)',
                 alignSelf: 'flex-end',

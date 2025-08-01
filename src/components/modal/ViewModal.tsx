@@ -3,6 +3,7 @@ import Modal from "react-modal";
 import PhoneIcon from '@mui/icons-material/Phone';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import {useTheme} from "../context/ThemeContext";
+import {formatInput} from "../../utlis/formatting";
 type MiniModalProps = {
     onClose: () => void,
     condition: boolean,
@@ -86,7 +87,7 @@ const ViewModal: FC<MiniModalProps> = ({onClose, condition, height, left, user: 
                 rowGap: 5
             }}>
                 <p style={{fontSize: 15, color: 'rgba(255,255,255,0.6)'}}>Номер телефона</p>
-                <p style={{fontWeight: 500}}>+{phonenumber}</p>
+                <p style={{fontWeight: 500}}>+{formatInput(phonenumber)}</p>
             </div>
             <div style={{
                 width: '100%',

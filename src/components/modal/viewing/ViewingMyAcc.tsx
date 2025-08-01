@@ -18,14 +18,14 @@ type MiniModalProps = {
 const ViewingMyAcc: FC<MiniModalProps> = ({onClose, condition, height, left}) => {
 
     const {theme} = useTheme()
-
+    const id = sessionStorage.getItem('userdata')
     const [error, setError] = useState('')
     const [data, setData] = useState<UserRes>({Name: 'Пусто', PhoneNumber: 'Пусто'})
     const {loading, get} = useDefaultGet<{Data: UserRes}>()
 
     useEffect(() => {
         const getData = async () => {
-            const res = await get('/users/873f7b36-a955-469b-9307-1599f56104ca')
+            const res = await get(`/users/${id}`)
             if (res.error) {
                 setError(res.error)
             }

@@ -4,7 +4,7 @@ import styles from '../modules/Form.module.css'
 import Field from "../components/form/Field";
 import FieldList from "../components/form/FieldList";
 import ButtonF from "../components/ui/buttons/ButtonF";
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import { useDefaultPost } from "../hooks/postQueries";
 import { AuthDataReq, AuthDataRes } from "../dto/auth";
 import { CircularProgress } from "@mui/material";
@@ -15,6 +15,9 @@ import Swal from "sweetalert2";
 
 const Auth = () =>
   {
+
+     const navigate = useNavigate();
+
     const {loading, post} = useDefaultPost<AuthDataReq, AuthDataRes>();
     const [adata, setData] = useState<AuthDataReq>({PhoneNumber: '', Password: ''});
      const getPhone = (phone: string) => {
@@ -75,8 +78,10 @@ const Auth = () =>
                     color: '#9C0852',
                     iconColor: '#E50A5E',
                     confirmButtonColor: '#E50A5E'
-                  });
-              }
+                  })
+              } else {
+                        navigate('/home')
+                    }
             }
     }
 

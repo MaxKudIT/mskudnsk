@@ -2,23 +2,28 @@ import React, {useEffect, useState} from "react";
 import { Navigate } from "react-router-dom";
 import {useDefaultGet} from "../hooks/getQueries";
 import {CircularProgress} from "@mui/material";
+import {useSelector} from "react-redux";
+import {RootState, useAppDispatch} from "../redux/store";
+import {setUserId} from "../redux/slice";
 
 
 const EntryLogic = () =>
   {
 
-    const {loading, get} = useDefaultGet<{IsAuth: boolean}>()
+    const dispatch = useAppDispatch()
+    const {loading, get} = useDefaultGet<{IsAuth: boolean, Id: string}>()
     const [error, setError] = useState('')
     const [auth, setAuth] = useState<boolean>()
     useEffect(() => {
       
       const getData = async () => {
-        const res = await get('auth/isAuth')
+        const res = await get('/isAuth')
         if (res.error) {
           setError(res.error)
           setAuth(false)
         } else {
           setAuth(res.data?.IsAuth)
+           sessionStorage.setItem('userdata', res.data?.Id!)
         }
       }
       getData()

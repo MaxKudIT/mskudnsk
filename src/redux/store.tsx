@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import registrationReducer  from "./slice";
+import {registrationReducer, userDataReducer}  from "./slice";
 
 export const store = configureStore({
   reducer: {
     registration: registrationReducer,
+    userdata: userDataReducer
+
   }
 });
 

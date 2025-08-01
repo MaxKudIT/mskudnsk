@@ -36,7 +36,7 @@ const ChatPreview: FC<ChatPreviewProps> = React.memo(({User: {Name, AvatarUrl, S
     const {theme} = useTheme()
 
 
-    const {selectedChatId, setSelectedChatId} = useSelected()
+    const {selectedChatId, setSelectedChatId, setParticipantId} = useSelected()
 
     const colorCalculate = () => {
         if (theme === 'dark' || selectedChatId === ChatId) {
@@ -61,6 +61,8 @@ const ChatPreview: FC<ChatPreviewProps> = React.memo(({User: {Name, AvatarUrl, S
     return (
         <div onClick={() => {
             setSelectedChatId(ChatId)
+            setParticipantId(ParticipantId)
+
         }} className={classname}>
             <div style={{width: 60,
                         height: 60,
@@ -101,7 +103,7 @@ const ChatPreview: FC<ChatPreviewProps> = React.memo(({User: {Name, AvatarUrl, S
                         <VisibilityIcon fontSize={'small'} style={{color: theme === 'light' && selectedChatId === ChatId ? 'white' : '#BD094E'}}/>
                     ) : (
                         <VisibilityOffIcon fontSize={'small'} style={{color: iconColorCalculate}}/>
-                    ) : (
+                    ) : UnReadMessages.length ? (
                         <div style={{
                             paddingLeft: 8,
                             paddingRight: 8,
@@ -113,6 +115,19 @@ const ChatPreview: FC<ChatPreviewProps> = React.memo(({User: {Name, AvatarUrl, S
                             alignItems: 'center'
                         }}>
                             <p style={{color: 'rgba(255,255,255, 0.9)', fontWeight: '500'}}>{UnReadMessages.length}</p>
+                        </div>
+
+                    ) : (
+                        <div style={{
+                            paddingLeft: 8,
+                            paddingRight: 8,
+                            height: 25,
+                            borderRadius: 50,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}>
+                            <p style={{color: 'rgba(255,255,255, 0.9)', fontWeight: '500'}}></p>
                         </div>
                     )
 

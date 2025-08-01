@@ -52,7 +52,8 @@ const Home = () =>
             }
             else {
                 if (res.data) {
-                   setPreviews(res.data.previews)
+                    console.log(res.data)
+                   setPreviews(prev => [...prev, ...res.data?.previews || []])
                 }
 
             }
@@ -165,7 +166,7 @@ const Home = () =>
 
         </div>
 
-          {selectedChatId !== null && <Group/>}
+          {selectedChatId !== null && <Chat/>}
 
 
       </div>

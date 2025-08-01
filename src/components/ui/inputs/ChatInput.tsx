@@ -3,10 +3,16 @@ import styles from '../../../modules/Chat.module.css'
 import SendIcon from '@mui/icons-material/Send';
 import CloseIcon from "@mui/icons-material/Close";
 import {useTheme} from "../../context/ThemeContext";
+import {ChatMessageReq, ChatMessageRes} from "../../../dto/message";
+import {useDefaultPost} from "../../../hooks/postQueries";
+import {v4} from "uuid";
+import {useSelected} from "../../context/selected/SelectedProvider";
+import { RootState } from '../../../redux/store';
+import {useSelector} from "react-redux";
 
 
 export type ChatProps = {
-    getInputValue: (value: string) => void
+    getInputValue: (message: ChatMessageRes) => void
 }
 
 const ChatInput: FC<ChatProps> = ({getInputValue}) => {
@@ -15,14 +21,46 @@ const ChatInput: FC<ChatProps> = ({getInputValue}) => {
 
     const {theme} = useTheme()
 
+    const Id = sessionStorage.getItem('userdata');
+    const {selectedChatId, participantId} = useSelected()
+
+    const {loading: loadingMessage, post: postMessage} = useDefaultPost<ChatMessageReq, {messageid: string}>()
 
 
     useEffect(() => {
         inputRef.current?.focus()
     }, []);
 
-    const sendMessage = () => {
-        getInputValue(input);
+    const sendMessage = async () => {
+        const messageDTO: ChatMessageReq = {
+            Content: input,
+            CorrespondenceType: 'chat',
+            ChatId: selectedChatId!,
+            SenderId: Id!,
+            Id: v4(),
+            Type: 'text',
+            RecieverId: participantId!
+        }
+        const message: ChatMessageRes = {
+            Content: input,
+            CorrespondenceType: 'chat',
+            ChatId: selectedChatId!,
+            SenderId: Id!,
+            Id: v4(),
+            Type: 'text',
+            CreatedAt: new Date(),
+            UpdatedAt: new Date(),
+            ReadAt: null
+        }
+        console.log(messageDTO)
+        const req = await postMessage('/cm/create', messageDTO)
+        if (req.error) {
+            console.log(req.error)
+            return
+        } else {
+            getInputValue(message)
+        }
+        
         setInput('')
     }
 
