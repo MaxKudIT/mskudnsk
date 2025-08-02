@@ -32,9 +32,12 @@ export type ChatPreviewProps = {
 
 
 
-const ChatPreview: FC<ChatPreviewProps> = React.memo(({User: {Name, AvatarUrl, Status}, MessageMeta: {Content, IsRead, CreatedAt, IsMy, SenderId, UnReadMessages}, ChatId, ParticipantId, classname}) => {
+const ChatPreview: FC<ChatPreviewProps> = React.memo(({User: {Name, Color, Status}, MessageMeta: {Content, IsRead, CreatedAt, IsMy, SenderId, UnReadMessages}, ChatId, ParticipantId, classname}) => {
     const {theme} = useTheme()
 
+    const Id = sessionStorage.getItem('userdata');
+
+    const unReadNotMyMessages = UnReadMessages.filter(id => id !== Id)
 
     const {selectedChatId, setSelectedChatId, setParticipantId} = useSelected()
 
@@ -67,7 +70,7 @@ const ChatPreview: FC<ChatPreviewProps> = React.memo(({User: {Name, AvatarUrl, S
             <div style={{width: 60,
                         height: 60,
                         borderRadius: '50%',
-                        background: 'red',
+                        background: Color,
                         display: "flex",
                         alignItems: 'center',
                         justifyContent: 'center'
@@ -103,7 +106,7 @@ const ChatPreview: FC<ChatPreviewProps> = React.memo(({User: {Name, AvatarUrl, S
                         <VisibilityIcon fontSize={'small'} style={{color: theme === 'light' && selectedChatId === ChatId ? 'white' : '#BD094E'}}/>
                     ) : (
                         <VisibilityOffIcon fontSize={'small'} style={{color: iconColorCalculate}}/>
-                    ) : UnReadMessages.length ? (
+                    ) : unReadNotMyMessages.length !== 0 ? (
                         <div style={{
                             paddingLeft: 8,
                             paddingRight: 8,
@@ -114,7 +117,7 @@ const ChatPreview: FC<ChatPreviewProps> = React.memo(({User: {Name, AvatarUrl, S
                             justifyContent: 'center',
                             alignItems: 'center'
                         }}>
-                            <p style={{color: 'rgba(255,255,255, 0.9)', fontWeight: '500'}}>{UnReadMessages.length}</p>
+                            <p style={{color: 'rgba(255,255,255, 0.9)', fontWeight: '500'}}>{unReadNotMyMessages.length}</p>
                         </div>
 
                     ) : (

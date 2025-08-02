@@ -10,7 +10,7 @@ import {UserRes} from "../../../dto/user";
 
 
 
-const HeaderChat: FC<{getUserpage: (id: UserRes) => void} & ChatHeaderRes> = ({getUserpage, Name, Id, Status}) => {
+const HeaderChat: FC<{getUserpage: (id: UserRes) => void} & ChatHeaderRes> = ({getUserpage, Name, Id, Status, Color}) => {
 
     const {participantId} = useSelected()
 
@@ -24,7 +24,7 @@ const HeaderChat: FC<{getUserpage: (id: UserRes) => void} & ChatHeaderRes> = ({g
             <div onClick={async () => {
                 const req = await get(`/users/${participantId}`)
                 if (req.data) {
-                    getUserpage({Name: req.data.Data.Name, PhoneNumber: req.data.Data.PhoneNumber})
+                    getUserpage({Name: req.data.Data.Name, PhoneNumber: req.data.Data.PhoneNumber, Color: req.data.Data.Color})
                 } else {
                     console.log('Ошибка получения данных')
                 }
@@ -32,21 +32,21 @@ const HeaderChat: FC<{getUserpage: (id: UserRes) => void} & ChatHeaderRes> = ({g
                 <div style={{
                     width: 45,
                     height: 45,
-                    background: 'orange',
+                    background: Color,
                     borderRadius: 50,
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
                     opacity: 0.8
                 }}>
-                    <p style={{color: 'white', fontWeight: 500, fontSize: 18}}>И</p>
+                    <p style={{color: 'white', fontWeight: 500, fontSize: 18}}>{Name[0]}</p>
                 </div>
                 <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'space-evenly'}}>
                     <p style={{fontSize: 18, color: colorP, fontWeight: 500, letterSpacing: 0.3}}>{Name}</p>
                     {Status ? (
-                        <p style={{fontSize: 15, color: colorDownP}}>онлайн</p>
+                        <p style={{fontSize: 15, color: '#E50A5E'}}>онлайн</p>
                     ) : (
-                        <p style={{fontSize: 15, color: colorDownP}}>был(а) недавно</p>
+                        <p style={{fontSize: 15, color: colorDownP}}>не в сети</p>
                     )}
 
                 </div>

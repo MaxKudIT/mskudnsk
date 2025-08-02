@@ -1,5 +1,5 @@
 import React, {FC, ReactNode, useContext, useState} from 'react';
-import {SelectedContext} from "../../../index";
+import {ChatPreviewsOptUI, SelectedContext} from "../../../index";
 
 export const SelectedProvider: FC<{children: ReactNode}> = ({children}) => {
 
@@ -15,9 +15,16 @@ export const SelectedProvider: FC<{children: ReactNode}> = ({children}) => {
         setPtcp(id)
     }
 
+    const [chatPreviewOpt, setPreviewP] = useState<ChatPreviewsOptUI | null>(null)
+
+    const setPreview = (preview: ChatPreviewsOptUI) => {
+        setPreviewP(preview)
+    }
+
+
 
     return (
-        <SelectedContext.Provider value={{selectedChatId: selected, setSelectedChatId, participantId, setParticipantId}}>
+        <SelectedContext.Provider value={{selectedChatId: selected, setSelectedChatId, participantId, setParticipantId, chatPreviewOpt, setPreview}}>
             {children}
         </SelectedContext.Provider>
     );

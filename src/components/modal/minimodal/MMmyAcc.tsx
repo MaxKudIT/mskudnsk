@@ -6,6 +6,9 @@ import ViewingMyAcc from "../viewing/ViewingMyAcc";
 import ViewingMyContacts from "../viewing/ViewingMyContacts";
 import {useSelectedPopups} from "../../context/selected/SelectedPopupsProvider";
 import {useTheme} from "../../context/ThemeContext";
+import {useDefaultGet} from "../../../hooks/getQueries";
+import {useNavigate} from "react-router-dom";
+import {useSelected} from "../../context/selected/SelectedProvider";
 
 
 type MiniModalProps = {
@@ -23,13 +26,15 @@ const MMmyAcc: FC<MiniModalProps> = ({onClose, condition, buttonsProps, height, 
 
 
     const {theme} = useTheme()
-    const {selectedPopups, downSelectedPopup, upSelectedPopup} = useSelectedPopups()
+    const {selectedPopups, downSelectedPopup, upSelectedPopup, clearSelectedPopups} = useSelectedPopups()
 
+    const {get: getLogout} = useDefaultGet();
+    const navigate = useNavigate();
 
     const backModalCalculdate = theme === 'dark' ? 'linear-gradient(0deg,rgba(79, 3, 34, 1) 0%, rgba(56, 3, 28, 1) 100%)' : 'linear-gradient(0deg,rgba(76, 9, 171, 1) 0%, rgba(64, 9, 143, 1) 100%)'
 
 
-
+    const {setSelectedChatId} = useSelected()
 
 
 
@@ -64,7 +69,12 @@ const MMmyAcc: FC<MiniModalProps> = ({onClose, condition, buttonsProps, height, 
             {buttonsProps.map(props => {
                 if (props.text === 'Выйти из аккаунта') {
                     return (
-                        <button style={{color: 'red', fontWeight: 600}} className={styles.home_modal_button}>
+                        <button onClick={async () => {
+                            await getLogout('/logout')
+                            clearSelectedPopups()
+                            setSelectedChatId(null)
+                            navigate('/auth')
+                        }} style={{color: 'red', fontWeight: 600}} className={styles.home_modal_button}>
                             {props.icon}
                             {props.text}
                         </button>

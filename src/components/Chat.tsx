@@ -18,6 +18,7 @@ import { useSelector } from 'react-redux';
 import MessageWrapperParticipant from "./MessageWrapperParticipant";
 import {v4} from "uuid";
 import {UserRes} from "../dto/user";
+import websocket from "../websocket";
 
 
 
@@ -86,12 +87,12 @@ const Chat = () => {
                 left={'20%'}
                 onClose={() => setUserpage(null)}
                 condition={userpage !== null}
-                user={userpage !== null ? {nickname: userpage.Name, phonenumber: userpage.PhoneNumber, color: 'orange'} : {nickname: 'Пусто', phonenumber: 'Пусто', color: 'red'}}
+                user={userpage !== null ? {nickname: userpage.Name, phonenumber: userpage.PhoneNumber, color: userpage.Color} : {nickname: 'Пусто', phonenumber: 'Пусто', color: 'red'}}
             />
             {chatProps?.headerdata ? (
-                <HeaderChat Name={chatProps.headerdata.Name} Status={chatProps.headerdata.Status} AvatarUrl={chatProps.headerdata.AvatarUrl} Id={chatProps.headerdata.Id} getUserpage={getUserpage}/>
+                <HeaderChat Name={chatProps.headerdata.Name} Status={chatProps.headerdata.Status} Color={chatProps.headerdata.Color} Id={chatProps.headerdata.Id} getUserpage={getUserpage}/>
             ) : (
-                <HeaderChat Name={'Призрак'} Status={false} AvatarUrl={'a'} Id={'a'} getUserpage={getUserpage}/>
+                <HeaderChat Name={'Призрак'} Status={false} Color={'red'} Id={'a'} getUserpage={getUserpage}/>
             )}
 
             {error ? (
@@ -135,10 +136,12 @@ const Chat = () => {
                             </div>
                         ) : (
                             <div onClick={async () => {
+                                const ci = selectedChatId === 'chat1' ? '00000000-0000-0000-0000-000000000000' : selectedChatId!
+                                console.log(ci)
                                 const messageDTO: ChatMessageReq = {
                                     Content: 'Привет',
                                     CorrespondenceType: 'chat',
-                                    ChatId: selectedChatId!,
+                                    ChatId: ci,
                                     SenderId: Id!,
                                     Id: v4(),
                                     Type: 'text',
@@ -147,7 +150,7 @@ const Chat = () => {
                                 const message: ChatMessageRes = {
                                     Content: 'Привет',
                                     CorrespondenceType: 'chat',
-                                    ChatId: selectedChatId!,
+                                    ChatId: ci,
                                     SenderId: Id!,
                                     Id: v4(),
                                     Type: 'text',
@@ -155,13 +158,8 @@ const Chat = () => {
                                     UpdatedAt: new Date(),
                                     ReadAt: null
                                 }
-                                const req = await postMessage('/cm/create', messageDTO)
-                                if (req.error) {
-                                    setError(req.error)
-                                } else {
-                                    getInputValue(message)
-                                    }
-
+                                websocket.sendMessage(messageDTO)
+                                getInputValue(message)
 
                             }} style={{
                                 marginTop: '30vh',

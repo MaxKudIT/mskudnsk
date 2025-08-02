@@ -1,9 +1,15 @@
-import React, {FC, ReactElement} from 'react';
+import React, {FC, ReactElement, useEffect, useState} from 'react';
 import Modal from "react-modal";
 import PhoneIcon from '@mui/icons-material/Phone';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import {useTheme} from "../context/ThemeContext";
 import {formatInput} from "../../utlis/formatting";
+import {useDefaultGet} from "../../hooks/getQueries";
+import { useDefaultPost } from '../../hooks/postQueries';
+import {useSelected} from "../context/selected/SelectedProvider";
+import {useDefaultDelete} from "../../hooks/deleteQueiries";
+import {useSelectedPopups} from "../context/selected/SelectedPopupsProvider";
 type MiniModalProps = {
     onClose: () => void,
     condition: boolean,
@@ -22,6 +28,32 @@ const ViewModal: FC<MiniModalProps> = ({onClose, condition, height, left, user: 
     const {theme} = useTheme()
 
     const backModalCalculdate = theme === 'dark' ? 'linear-gradient(0deg,rgba(79, 3, 34, 1) 0%, rgba(56, 3, 28, 1) 100%)' : 'linear-gradient(0deg,rgba(76, 9, 171, 1) 0%, rgba(64, 9, 143, 1) 100%)'
+
+    const {participantId} = useSelected()
+    const {post} = useDefaultPost<{ContactId: string}, {My: boolean}>();
+
+    const {post: addContact} = useDefaultPost()
+    const {deleteC} = useDefaultDelete()
+
+    const [isMy, setMy] = useState(false)
+
+
+    const [trigger, setTrigger] = useState<boolean | null>(null)
+    useEffect(() => {
+        const getData = async () => {
+            const res = await post('contacts/my', {ContactId: participantId!})
+            if (res.error) {
+               console.log(res.error)
+            }
+            else {
+                if (res.data) {
+                  setMy(res.data.My)
+                }
+
+            }
+        }
+        getData()
+    }, [trigger]);
 
     return (
         <Modal style={{
@@ -77,7 +109,7 @@ const ViewModal: FC<MiniModalProps> = ({onClose, condition, height, left, user: 
                     rowGap: 2
                 }}>
                     <p style={{fontSize: 19, fontWeight: 500}}>{nickname}</p>
-                    <p style={{fontSize: 15, color: 'rgba(255,255,255,0.6)'}}>был(а) недавно</p>
+                    <p style={{fontSize: 15, color: 'rgba(255,255,255,0.6)'}}>не в сети</p>
                 </div>
 
             </div>
@@ -97,16 +129,49 @@ const ViewModal: FC<MiniModalProps> = ({onClose, condition, height, left, user: 
                 marginTop: 15,
 
             }}></div>
-            <div style={{
-                display: "flex",
-                columnGap: 5,
-                alignItems: 'center',
-                cursor: "pointer",
-                height: 30
-            }}>
-                <DeleteOutlineIcon style={{color: 'red'}} fontSize={'medium'}/>
-                <p style={{fontWeight: 600, fontSize: 17, color: 'red'}}>Удалить из контактов</p>
-            </div>
+            {isMy ? (
+                <div onClick={async () => {
+                    const req = await deleteC(`contacts/${participantId}`)
+
+                    if (req.error) {
+                        console.log(req.error)
+                        onClose()
+                        return
+                    }
+                    setTrigger(false)
+                    onClose()
+                }} style={{
+                    display: "flex",
+                    columnGap: 5,
+                    alignItems: 'center',
+                    cursor: "pointer",
+                    height: 30
+                }}>
+                    <DeleteOutlineIcon style={{color: 'red'}} fontSize={'medium'}/>
+                    <p style={{fontWeight: 600, fontSize: 17, color: 'red'}}>Удалить из контактов</p>
+                </div>
+            ) : (
+                <div onClick={async () => {
+                    const req = await addContact('contacts/add', {PhoneNumber: phonenumber})
+                    if (req.data) {
+                        setTrigger(true)
+                        onClose()
+                    } else {
+                        console.log(req.error)
+                        onClose()
+                    }
+                }} style={{
+                    display: "flex",
+                    columnGap: 5,
+                    alignItems: 'center',
+                    cursor: "pointer",
+                    height: 30
+                }}>
+                    <PersonAddAltIcon style={{color: 'coral'}} fontSize={'medium'}/>
+                    <p style={{fontWeight: 600, fontSize: 17, color: 'coral'}}>Добавить в контакты</p>
+                </div>
+            )}
+
         </Modal>
     );
 };

@@ -7,6 +7,11 @@ import {useDefaultGet} from "../../../hooks/getQueries";
 import {UserRes} from "../../../dto/user";
 import {formatInput} from "../../../utlis/formatting";
 import {CircularProgress} from "@mui/material";
+import {useDefaultDelete} from "../../../hooks/deleteQueiries";
+import {useNavigate} from "react-router-dom";
+import {useWebsocket} from "../../context/WebsocketContext";
+import {useSelectedPopups} from "../../context/selected/SelectedPopupsProvider";
+import {useSelected} from "../../context/selected/SelectedProvider";
 type MiniModalProps = {
     onClose: () => void,
     condition: boolean,
@@ -18,10 +23,19 @@ type MiniModalProps = {
 const ViewingMyAcc: FC<MiniModalProps> = ({onClose, condition, height, left}) => {
 
     const {theme} = useTheme()
+    const {status} = useWebsocket()
+
+
     const id = sessionStorage.getItem('userdata')
     const [error, setError] = useState('')
-    const [data, setData] = useState<UserRes>({Name: 'Пусто', PhoneNumber: 'Пусто'})
+    const [data, setData] = useState<UserRes>({Name: 'Пусто', PhoneNumber: 'Пусто', Color: 'red'})
+
     const {loading, get} = useDefaultGet<{Data: UserRes}>()
+    const {deleteC} = useDefaultDelete()
+    const {clearSelectedPopups} = useSelectedPopups()
+    const {setSelectedChatId} = useSelected()
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getData = async () => {
@@ -91,12 +105,13 @@ const ViewingMyAcc: FC<MiniModalProps> = ({onClose, condition, height, left}) =>
                         alignItems: 'center',
                         columnGap: 10,
                         marginTop: 30,
-                        marginBottom: 20
+                        marginBottom: 20,
+                        position: 'relative'
                     }}>
                         <div style={{width: 60,
                             height: 60,
                             borderRadius: '50%',
-                            background: "orange",
+                            background: data.Color,
                             display: "flex",
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -109,7 +124,12 @@ const ViewingMyAcc: FC<MiniModalProps> = ({onClose, condition, height, left}) =>
                             rowGap: 2
                         }}>
                             <p style={{fontSize: 19, fontWeight: 500}}>{data.Name}</p>
-                            <p style={{fontSize: 15, color: 'rgba(255,255,255,0.6)'}}>был(а) недавно</p>
+                            {status === 'не в сети' ? (
+                                <p style={{fontSize: 15, color: 'rgba(255,255,255,0.6)'}}>не в сети</p>
+                            ) : (
+                                <p style={{fontSize: 15, color: '#E50A5E', fontWeight: '600'}}>в сети</p>
+                            )}
+
                         </div>
 
                     </div>
@@ -137,7 +157,14 @@ const ViewingMyAcc: FC<MiniModalProps> = ({onClose, condition, height, left}) =>
                         height: 30
                     }}>
                         <DeleteOutlineIcon style={{color: 'red'}} fontSize={'medium'}/>
-                        <p style={{fontWeight: 600, fontSize: 17, color: 'red'}}>Удалить аккаунт</p>
+                        <button onClick={async () => {
+                            const req = await deleteC(`/users/${id}`)
+                            clearSelectedPopups()
+                            setSelectedChatId(null)
+                            navigate('/auth')
+
+
+                        }} style={{fontWeight: 600, fontSize: 17, color: 'red', background: 'none', border: 'none', cursor: 'pointer'}}>Удалить аккаунт</button>
                     </div>
                 </>
             )}

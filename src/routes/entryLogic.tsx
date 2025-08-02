@@ -23,7 +23,10 @@ const EntryLogic = () =>
           setAuth(false)
         } else {
           setAuth(res.data?.IsAuth)
-           sessionStorage.setItem('userdata', res.data?.Id!)
+            if (res.data?.IsAuth) {
+                sessionStorage.setItem('userdata', res.data?.Id!)
+            }
+
         }
       }
       getData()

@@ -9,6 +9,7 @@ import {v4} from "uuid";
 import {useSelected} from "../../context/selected/SelectedProvider";
 import { RootState } from '../../../redux/store';
 import {useSelector} from "react-redux";
+import websocket from "../../../websocket";
 
 
 export type ChatProps = {
@@ -22,20 +23,23 @@ const ChatInput: FC<ChatProps> = ({getInputValue}) => {
     const {theme} = useTheme()
 
     const Id = sessionStorage.getItem('userdata');
-    const {selectedChatId, participantId} = useSelected()
+    const {selectedChatId, participantId, setPreview} = useSelected()
 
-    const {loading: loadingMessage, post: postMessage} = useDefaultPost<ChatMessageReq, {messageid: string}>()
 
 
     useEffect(() => {
         inputRef.current?.focus()
     }, []);
 
+
+
+
     const sendMessage = async () => {
+        const ci = selectedChatId === 'chat1' ? '00000000-0000-0000-0000-000000000000' : selectedChatId!
         const messageDTO: ChatMessageReq = {
             Content: input,
             CorrespondenceType: 'chat',
-            ChatId: selectedChatId!,
+            ChatId: ci,
             SenderId: Id!,
             Id: v4(),
             Type: 'text',
@@ -44,7 +48,7 @@ const ChatInput: FC<ChatProps> = ({getInputValue}) => {
         const message: ChatMessageRes = {
             Content: input,
             CorrespondenceType: 'chat',
-            ChatId: selectedChatId!,
+            ChatId: ci,
             SenderId: Id!,
             Id: v4(),
             Type: 'text',
@@ -52,15 +56,9 @@ const ChatInput: FC<ChatProps> = ({getInputValue}) => {
             UpdatedAt: new Date(),
             ReadAt: null
         }
-        console.log(messageDTO)
-        const req = await postMessage('/cm/create', messageDTO)
-        if (req.error) {
-            console.log(req.error)
-            return
-        } else {
-            getInputValue(message)
-        }
-        
+        websocket.sendMessage(messageDTO)
+        getInputValue(message)
+        setPreview({MessageMeta: {Content: input, CreatedAt: new Date(), IsRead: false}, User: {Name: 'Max', Color: 'orange', Status: true}})
         setInput('')
     }
 

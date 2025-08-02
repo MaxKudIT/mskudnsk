@@ -7,15 +7,15 @@ v1.interceptors.response.use(
     response => response,
     async (error: AxiosError<{error: string}>) => {
         const originalRequest = error.config as AxiosRequestConfig & { _isRetry?: boolean };
-        console.log(error?.response)
+
         if (error?.response?.status === 403 && error?.response?.data?.error === 'token is expired' && !originalRequest._isRetry) {
             originalRequest._isRetry = true;
             try {
-                 await axios.post('/accesstoken', {}, {
+                 await v1.post('/accesstoken', {}, {
                     withCredentials: true
                 });
+                return v1(originalRequest);
             } catch (refreshError) {
-
                 window.location.replace('http://localhost:3001/auth')
                 return Promise.reject(refreshError);
             }

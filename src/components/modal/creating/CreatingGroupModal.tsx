@@ -6,9 +6,9 @@ import {Input} from 'antd'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import TitleIcon from '@mui/icons-material/Title';
 import ContactsContainer from "../../ContactsContainer";
-import {ContactPreviewProps} from "../../preview/ContactPreviewWithSelect";
 import {useSelectedContacts} from "../../context/selected/SelectedContactsProvider";
 import {useTheme} from "../../context/ThemeContext";
+import {ContactPreviewRes} from "../../../dto/contact";
 type CreatingGroupModalProps = {
     onClose: () => void,
     condition: boolean,
@@ -28,7 +28,7 @@ const CreatingGroupModal: FC<CreatingGroupModalProps> = ({onClose, condition, he
     const backModalCalculdate = theme === 'dark' ? 'linear-gradient(0deg,rgba(79, 3, 34, 1) 0%, rgba(56, 3, 28, 1) 100%)' : 'linear-gradient(0deg,rgba(76, 9, 171, 1) 0%, rgba(64, 9, 143, 1) 100%)'
 
 
-    const [contacts, setContacts] = useState<ContactPreviewProps[]>([
+    const [contacts, setContacts] = useState<ContactPreviewRes[]>([
 
     ]);
     const [input, setInput] = useState('')

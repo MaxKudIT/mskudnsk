@@ -3,36 +3,37 @@ import styles from "../../modules/Modal.module.css";
 import {useSelectedContacts} from "../context/selected/SelectedContactsProvider";
 import {useSelected} from "../context/selected/SelectedProvider";
 import {useSelectedPopups} from "../context/selected/SelectedPopupsProvider";
-
-
-export type ContactPreviewProps = {
-    id: string
-    color: string
-    nickname: string
-}
+import {ContactPreviewRes} from "../../dto/contact";
 
 
 
 
-const ContactPreview: FC<ContactPreviewProps> = ({color, nickname, id}) => {
-    const {setSelectedChatId} = useSelected()
+
+
+const ContactPreview: FC<ContactPreviewRes> = ({Color, Status, Name, UserId}) => {
+    const {setSelectedChatId, setParticipantId} = useSelected()
     const {clearSelectedPopups} = useSelectedPopups()
     return (
         <div onClick={() => {
+            setParticipantId(UserId)
             setSelectedChatId('chat1');
             clearSelectedPopups()
         }} className={styles.contact_preview}>
             <div style={{width: 45,
                 height: 45,
                 borderRadius: '50%',
-                background: color,
+                background: Color,
                 display: "flex",
                 alignItems: 'center',
                 justifyContent: 'center',
-            }}><p style={{fontSize: 18, color: 'white', opacity: 0.9, fontWeight: 600}}>{nickname[0]}</p></div>
+            }}><p style={{fontSize: 18, color: 'white', opacity: 0.9, fontWeight: 600}}>{Name[0]}</p></div>
             <div>
-                <p style={{fontWeight: '500'}}>{nickname}</p>
-                <p style={{fontSize: 15, color: 'rgba(255,255,255,0.6)'}}>онлайн</p>
+                <p style={{fontWeight: '500'}}>{Name}</p>
+                {!Status? (
+                    <p style={{fontSize: 15, color: 'rgba(255,255,255,0.6)'}}>не в сети</p>
+                ) : (
+                    <p style={{fontSize: 15, color: '#E50A5E', fontWeight: '600'}}>в сети</p>
+                )}
             </div>
 
         </div>

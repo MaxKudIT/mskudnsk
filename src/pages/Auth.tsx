@@ -10,13 +10,21 @@ import { AuthDataReq, AuthDataRes } from "../dto/auth";
 import { CircularProgress } from "@mui/material";
 import { ValidatePasswordFormat, ValidatePhoneFormat } from "../utlis/validate";
 import Swal from "sweetalert2";
+import {UserRes} from "../dto/user";
+import {useDefaultGet} from "../hooks/getQueries";
 
 
 
 const Auth = () =>
   {
 
-     const navigate = useNavigate();
+    
+
+
+
+
+
+      const navigate = useNavigate();
 
     const {loading, post} = useDefaultPost<AuthDataReq, AuthDataRes>();
     const [adata, setData] = useState<AuthDataReq>({PhoneNumber: '', Password: ''});
@@ -80,7 +88,9 @@ const Auth = () =>
                     confirmButtonColor: '#E50A5E'
                   })
               } else {
+                        sessionStorage.setItem('userdata', data?.Id!)
                         navigate('/home')
+                        
                     }
             }
     }
@@ -91,6 +101,7 @@ const Auth = () =>
     return (
       
       <div className={styles.page}>
+
          <div className={styles.wrapper}>
             <div className={styles.header}>
                 <img src={logo} alt=""/>

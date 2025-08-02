@@ -1,5 +1,6 @@
 export type ContactPreviewRes = {
     UserId: string
-    Avatar: string
+    Color: string
     Name: string
+    Status: boolean
 }

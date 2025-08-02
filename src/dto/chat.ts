@@ -1,7 +1,7 @@
 export interface ChatPreviewsRes {
     User: {
         Name: string
-        AvatarUrl: string
+        Color: string
         Status: boolean
     }
     MessageMeta: {
@@ -19,7 +19,7 @@ export interface ChatPreviewsRes {
 export interface ChatHeaderRes {
     Id: string
     Name: string
-    AvatarUrl: string
+    Color: string
     Status: boolean
 }
 

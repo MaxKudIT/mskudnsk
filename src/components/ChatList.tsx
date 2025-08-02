@@ -10,7 +10,7 @@ import ChatPreview from "./preview/ChatPreview";
 
 
 const ChatList: FC<{chats: (ChatPreviewsRes | GroupPreviewT)[]}> = ({chats}) => {
-    const {selectedChatId} = useSelected();
+    const {selectedChatId, chatPreviewOpt} = useSelected();
     const {theme} = useTheme()
     return (
         <div className={styles.chat_list}>
@@ -24,18 +24,35 @@ const ChatList: FC<{chats: (ChatPreviewsRes | GroupPreviewT)[]}> = ({chats}) => 
                         lastMessage={chatpreview.lastMessage}
                         date={chatpreview.date}/>)
                 } else {
-                    return (<ChatPreview
-                        User={{Name: chatpreview.User.Name, AvatarUrl: chatpreview.User.AvatarUrl, Status: chatpreview.User.Status}}
-                        MessageMeta={{Content: chatpreview.MessageMeta.Content,
-                            IsRead: chatpreview.MessageMeta.IsRead,
-                            CreatedAt: chatpreview.MessageMeta.CreatedAt,
-                            IsMy: chatpreview.MessageMeta.IsMy,
-                            SenderId: chatpreview.MessageMeta.SenderId,
-                            UnReadMessages: chatpreview.MessageMeta.UnReadMessages}}
-                        ParticipantId={chatpreview.ParticipantId}
-                        ChatId={chatpreview.ChatId}
-                        classname={chatpreview.ChatId === selectedChatId ? styles[`chat_preview_selected_${theme}`]: styles[`chat_preview_${theme}`]}
+                    if (chatPreviewOpt !== null) {
+                        return (<ChatPreview
+                            User={{Name: chatpreview.User.Name, Color: chatpreview.User.Color, Status: chatpreview.User.Status}}
+                            MessageMeta={{Content: chatPreviewOpt.MessageMeta.Content,
+                                IsRead: chatPreviewOpt.MessageMeta.IsRead,
+                                CreatedAt: chatPreviewOpt.MessageMeta.CreatedAt,
+                                IsMy: true,
+                                SenderId: chatpreview.MessageMeta.SenderId,
+                                UnReadMessages: chatpreview.MessageMeta.UnReadMessages}}
+                            ParticipantId={chatpreview.ParticipantId}
+                            ChatId={chatpreview.ChatId}
+                            classname={chatpreview.ChatId === selectedChatId ? styles[`chat_preview_selected_${theme}`]: styles[`chat_preview_${theme}`]}
                         />)
+                    } else {
+                        return (<ChatPreview
+                            User={{Name: chatpreview.User.Name, Color: chatpreview.User.Color, Status: chatpreview.User.Status}}
+                            MessageMeta={{Content: chatpreview.MessageMeta.Content,
+                                IsRead: chatpreview.MessageMeta.IsRead,
+                                CreatedAt: chatpreview.MessageMeta.CreatedAt,
+                                IsMy: chatpreview.MessageMeta.IsMy,
+                                SenderId: chatpreview.MessageMeta.SenderId,
+                                UnReadMessages: chatpreview.MessageMeta.UnReadMessages}}
+                            ParticipantId={chatpreview.ParticipantId}
+                            ChatId={chatpreview.ChatId}
+                            classname={chatpreview.ChatId === selectedChatId ? styles[`chat_preview_selected_${theme}`]: styles[`chat_preview_${theme}`]}
+                        />)
+                    }
+
+
                 }
             }) }
         </div>

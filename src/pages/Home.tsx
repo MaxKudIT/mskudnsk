@@ -29,11 +29,50 @@ import {CircularProgress} from "@mui/material";
 import {useDefaultGet} from "../hooks/getQueries";
 import {ChatPreviewsRes} from "../dto/chat";
 import {ContactPreviewRes} from "../dto/contact";
+import websocket from "../websocket";
+import {useWebsocket} from "../components/context/WebsocketContext";
 
+
+const host = process.env.REACT_APP_HOST
 
 const Home = () =>
 {
-    //просто тест toggle
+
+    const {setStatus} = useWebsocket()
+    //websocket
+    useEffect(() => {
+
+        const getNessData = async () => {
+            try {
+
+
+                websocket.connect(`http://localhost:3000/ws`);
+                if (websocket.socket?.readyState !== WebSocket.OPEN) {
+                    await new Promise((resolve) => {
+                        if (websocket.socket != null) {
+                            websocket.socket.onopen = resolve;
+                        }
+
+                    });
+                    setStatus('онлайн')
+                }
+
+
+            } catch (err) {
+                console.error("Initialization error:", err);
+            }
+        }
+
+        getNessData()
+
+    }, []);
+
+
+
+
+
+
+
 
 
     const {theme, setTheme} = useTheme()
@@ -43,6 +82,7 @@ const Home = () =>
     const [previews,setPreviews] = useState<ChatPreviewsRes[]>([]);
     const [error, setError] = useState('')
 
+    const {selectedChatId, setSelectedChatId} = useSelected()
 
     useEffect(() => {
         const getData = async () => {
@@ -68,7 +108,7 @@ const Home = () =>
         }
     }, []);
 
-    const {selectedChatId, setSelectedChatId} = useSelected()
+
     const {selectedPopups, downSelectedPopup, skipModals} = useSelectedPopups()
     const handleKeyDown = (event: KeyboardEvent) => {
         if (event.key === 'Escape') {

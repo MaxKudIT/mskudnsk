@@ -12,6 +12,22 @@ import {SelectedProvider} from "./components/context/selected/SelectedProvider";
 import {SelectedContactsProvider} from "./components/context/selected/SelectedContactsProvider";
 import {SelectedPopupsProvider} from "./components/context/selected/SelectedPopupsProvider";
 import {ThemeProvider} from "./components/context/ThemeContext";
+import {WebsocketProvider} from "./components/context/WebsocketContext";
+
+
+export interface ChatPreviewsOptUI {
+    User?: {
+        Name: string
+        Color: string
+        Status: boolean
+    }
+    MessageMeta: {
+        Content: string
+        IsRead: boolean
+        CreatedAt: Date | string
+    }
+
+}
 
 
 
@@ -19,13 +35,17 @@ export const SelectedContext = createContext<{
     selectedChatId: string | null,
     setSelectedChatId: (chatId: string | null) => void,
     participantId: string | null,
-    setParticipantId: (participant: string | null) => void
+    setParticipantId: (participant: string | null) => void,
+    chatPreviewOpt: ChatPreviewsOptUI | null,
+    setPreview: (preview: ChatPreviewsOptUI) => void
 }
 >({
     selectedChatId: null,
     setSelectedChatId: (id: string | null) => {},
     participantId: null,
     setParticipantId: (ptcp: string | null) => {},
+    chatPreviewOpt: null,
+    setPreview: (preview: ChatPreviewsOptUI) => {}
 })
 
 export const SelectedContactsContext = createContext<{
@@ -71,13 +91,16 @@ const router = createBrowserRouter([{
 root.render(
   <Provider store={store}>
       <ThemeProvider>
-          <SelectedPopupsProvider>
-              <SelectedProvider>
-                  <SelectedContactsProvider>
-                      <RouterProvider router={router}/>
-                  </SelectedContactsProvider>
-              </SelectedProvider>
-          </SelectedPopupsProvider>
+          <WebsocketProvider>
+              <SelectedPopupsProvider>
+                  <SelectedProvider>
+                      <SelectedContactsProvider>
+                          <RouterProvider router={router}/>
+                      </SelectedContactsProvider>
+                  </SelectedProvider>
+              </SelectedPopupsProvider>
+          </WebsocketProvider>
+
       </ThemeProvider>
 
 
