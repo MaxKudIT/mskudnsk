@@ -31,6 +31,7 @@ import {ChatPreviewsRes} from "../dto/chat";
 import {ContactPreviewRes} from "../dto/contact";
 import websocket from "../websocket";
 import {useWebsocket} from "../components/context/WebsocketContext";
+import FilteredList from "../components/lists/FilteredList";
 
 
 const host = process.env.REACT_APP_HOST
@@ -93,13 +94,15 @@ const Home = () =>
             else {
                 if (res.data) {
                     console.log(res.data)
-                   setPreviews(prev => [...prev, ...res.data?.previews || []])
+                   setPreviews(res.data.previews || [])
                 }
 
             }
         }
         getData()
-    }, []);
+    }, [selectedChatId]);
+
+
 
     useEffect(() => {
         const savedTheme = getStorageItem<ThemeType>('theme')
@@ -147,12 +150,21 @@ const Home = () =>
     }
 
 
-    // const FilteredListLogic = (array: ChatPreviewT[], index: number): ReactElement<FilteredListProps> => {
-    //     if (index === 0 || index > 3) {
-    //         return <FilteredList input={input} array={array} type={'chats'}/>
-    //     }
-    //     return <FilteredList input={input} array={[]} type={'groups'}/>
-    // }
+    const calculateInputType = (index: number) => {
+
+        switch (index) {
+            case 1:
+                return 'chats'
+            case 2:
+                return 'groups'
+            case 3:
+                return 'contacts'
+            default:
+                return 'all'
+
+        }
+    }
+
 
     return (
       <div style={{justifyContent: selectedChatId === null ? 'center' : 'flex-start'}} className={styles[`page_${theme}`]}>
@@ -184,9 +196,13 @@ const Home = () =>
                   <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 250}}>
                       <CircularProgress sx={{color: '#E50A5E'}} size={30}/>
                   </div>
-              ) : previews.length !== 0 ? (
-                  <ChatList chats={previews}/>
-              ) : (
+              ) : previews.length !== 0 ?
+                  input.length !== 0 ? (
+                      <FilteredList input={input} type={calculateInputType(choiceindex)}  array={previews}/>
+                  ) : (
+                      <ChatList chats={previews}/>
+                      )
+              : (
                 <div style={{
                     height: '100%',
                     padding: '0 10px',

@@ -39,7 +39,7 @@ const ChatPreview: FC<ChatPreviewProps> = React.memo(({User: {Name, Color, Statu
 
     const unReadNotMyMessages = UnReadMessages.filter(id => id !== Id)
 
-    const {selectedChatId, setSelectedChatId, setParticipantId} = useSelected()
+    const {selectedChatId, setSelectedChatId, setParticipantId, setUnRead, unRead} = useSelected()
 
     const colorCalculate = () => {
         if (theme === 'dark' || selectedChatId === ChatId) {
@@ -65,7 +65,7 @@ const ChatPreview: FC<ChatPreviewProps> = React.memo(({User: {Name, Color, Statu
         <div onClick={() => {
             setSelectedChatId(ChatId)
             setParticipantId(ParticipantId)
-
+            setUnRead(unReadNotMyMessages.length)
         }} className={classname}>
             <div style={{width: 60,
                         height: 60,
@@ -106,7 +106,7 @@ const ChatPreview: FC<ChatPreviewProps> = React.memo(({User: {Name, Color, Statu
                         <VisibilityIcon fontSize={'small'} style={{color: theme === 'light' && selectedChatId === ChatId ? 'white' : '#BD094E'}}/>
                     ) : (
                         <VisibilityOffIcon fontSize={'small'} style={{color: iconColorCalculate}}/>
-                    ) : unReadNotMyMessages.length !== 0 ? (
+                    ) : unReadNotMyMessages.length !== 0 && unRead !== 0 ? (
                         <div style={{
                             paddingLeft: 8,
                             paddingRight: 8,
@@ -117,7 +117,7 @@ const ChatPreview: FC<ChatPreviewProps> = React.memo(({User: {Name, Color, Statu
                             justifyContent: 'center',
                             alignItems: 'center'
                         }}>
-                            <p style={{color: 'rgba(255,255,255, 0.9)', fontWeight: '500'}}>{unReadNotMyMessages.length}</p>
+                            <p style={{color: 'rgba(255,255,255, 0.9)', fontWeight: '500'}}>{selectedChatId === ChatId ? unRead : unReadNotMyMessages.length}</p>
                         </div>
 
                     ) : (

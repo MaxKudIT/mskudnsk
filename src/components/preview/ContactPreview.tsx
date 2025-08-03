@@ -16,7 +16,7 @@ const ContactPreview: FC<ContactPreviewRes> = ({Color, Status, Name, UserId}) =>
     return (
         <div onClick={() => {
             setParticipantId(UserId)
-            setSelectedChatId('chat1');
+            setSelectedChatId('00000000-0000-0000-0000-000000000000');
             clearSelectedPopups()
         }} className={styles.contact_preview}>
             <div style={{width: 45,

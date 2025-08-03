@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useRef, useState} from 'react';
 import styles from '../modules/Chat.module.css'
 import HeaderChat from "./layout/header/HeaderChat";
 import MessageWrapperMy from './MessageWrapperMy';
@@ -19,6 +19,7 @@ import MessageWrapperParticipant from "./MessageWrapperParticipant";
 import {v4} from "uuid";
 import {UserRes} from "../dto/user";
 import websocket from "../websocket";
+import {useMessageSeenTracker} from "../hooks/intersectionObserver";
 
 
 
@@ -30,11 +31,14 @@ export type ChatType = {
 
 
 const Chat = () => {
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
 
     const Id = sessionStorage.getItem('userdata');
 
     const {theme} = useTheme()
-    const {participantId, selectedChatId} = useSelected()
+    const {participantId, selectedChatId, setSelectedChatId, unRead} = useSelected()
+    console.log(unRead)
 
     const {loading, post} = useDefaultPost<{Idtwo: string}, ChatType>()
 
@@ -43,6 +47,10 @@ const Chat = () => {
     const [chatProps, setChatProps] = useState<ChatType>();
     const [error, setError] = useState('')
 
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({behavior: "smooth"})
+    }, [chatProps?.messages]);
 
 
     useEffect(() => {
@@ -53,8 +61,11 @@ const Chat = () => {
             }
             else {
                 if (res.data) {
-                    console.log(res.data)
                     setChatProps(res.data)
+                    if (res.data.chat !== null) {
+                        setSelectedChatId(res.data.chat)
+                    }
+
                 }
 
             }
@@ -119,6 +130,7 @@ const Chat = () => {
                                       />)
                                   } else {
                                       return  ( <MessageWrapperParticipant
+
                                           CorrespondenceType={message.CorrespondenceType}
                                           Id={message.Id}
                                           ChatId={message.ChatId}
@@ -133,6 +145,7 @@ const Chat = () => {
                                 }
 
                                 )}
+                                <div ref={messagesEndRef}></div>
                             </div>
                         ) : (
                             <div onClick={async () => {

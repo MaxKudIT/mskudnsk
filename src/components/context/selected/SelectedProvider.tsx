@@ -17,14 +17,24 @@ export const SelectedProvider: FC<{children: ReactNode}> = ({children}) => {
 
     const [chatPreviewOpt, setPreviewP] = useState<ChatPreviewsOptUI | null>(null)
 
-    const setPreview = (preview: ChatPreviewsOptUI) => {
+    const setPreview = (preview: ChatPreviewsOptUI | null) => {
         setPreviewP(preview)
     }
 
 
+    const [unRead, setUnReadp] = useState<number | null>(null)
+
+    const minusUnRead = () => {
+        setUnReadp(prev => prev !== null ? prev - 1 : 0);
+    }
+
+    const setUnRead = (value: number | null) => {
+        setUnReadp(value)
+    }
+
 
     return (
-        <SelectedContext.Provider value={{selectedChatId: selected, setSelectedChatId, participantId, setParticipantId, chatPreviewOpt, setPreview}}>
+        <SelectedContext.Provider value={{selectedChatId: selected, setSelectedChatId, participantId, setParticipantId, chatPreviewOpt, setPreview, unRead, minusUnRead, setUnRead}}>
             {children}
         </SelectedContext.Provider>
     );

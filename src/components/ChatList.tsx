@@ -24,7 +24,7 @@ const ChatList: FC<{chats: (ChatPreviewsRes | GroupPreviewT)[]}> = ({chats}) => 
                         lastMessage={chatpreview.lastMessage}
                         date={chatpreview.date}/>)
                 } else {
-                    if (chatPreviewOpt !== null) {
+                    if (chatPreviewOpt !== null && selectedChatId === chatpreview.ChatId) {
                         return (<ChatPreview
                             User={{Name: chatpreview.User.Name, Color: chatpreview.User.Color, Status: chatpreview.User.Status}}
                             MessageMeta={{Content: chatPreviewOpt.MessageMeta.Content,

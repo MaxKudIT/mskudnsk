@@ -1,7 +1,7 @@
-import React, {ComponentType, FC, JSX, ReactElement, ReactNode, useState} from 'react';
+import React, {ComponentType, FC, JSX, ReactElement, ReactNode, useEffect, useState} from 'react';
 import Modal from "react-modal";
 import styles from "../../../modules/Modal.module.css";
-import {SvgIconProps} from "@mui/material";
+import {CircularProgress, SvgIconProps} from "@mui/material";
 import {Input} from 'antd'
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import TitleIcon from '@mui/icons-material/Title';
@@ -9,6 +9,7 @@ import ContactsContainer from "../../ContactsContainer";
 import {useSelectedContacts} from "../../context/selected/SelectedContactsProvider";
 import {useTheme} from "../../context/ThemeContext";
 import {ContactPreviewRes} from "../../../dto/contact";
+import {useDefaultGet} from "../../../hooks/getQueries";
 type CreatingGroupModalProps = {
     onClose: () => void,
     condition: boolean,
@@ -27,10 +28,30 @@ const CreatingGroupModal: FC<CreatingGroupModalProps> = ({onClose, condition, he
 
     const backModalCalculdate = theme === 'dark' ? 'linear-gradient(0deg,rgba(79, 3, 34, 1) 0%, rgba(56, 3, 28, 1) 100%)' : 'linear-gradient(0deg,rgba(76, 9, 171, 1) 0%, rgba(64, 9, 143, 1) 100%)'
 
-
+    const [error, setError] = useState('')
     const [contacts, setContacts] = useState<ContactPreviewRes[]>([
 
     ]);
+
+    const {loading, get} = useDefaultGet<{Contacts: ContactPreviewRes[]}>()
+    useEffect(() => {
+        const getData = async () => {
+            const res = await get('contacts/all')
+            if (res.error) {
+                setError(res.error)
+            }
+            else {
+                if (res.data) {
+                    console.log(res.data)
+                    setContacts(res.data.Contacts)
+                }
+
+            }
+        }
+        getData()
+
+    }, []);
+
     const [input, setInput] = useState('')
     const [empty, setEmpty] = useState(false)
     const {selectedContactsId, clearSelectedContacts} = useSelectedContacts()
@@ -94,31 +115,41 @@ const CreatingGroupModal: FC<CreatingGroupModalProps> = ({onClose, condition, he
             </div>
 
             <p style={{fontSize: 15, color: 'rgba(255,255,255,0.6)', marginBottom: 10}}>Приглашенные контакты ({selectedContactsId.length})</p>
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                columnGap: 5,
-                position: 'relative'
-            }}>
-                {contacts.length !== 0 ? (
-                    // <ContactsContainer withSelect={true} contacts={contacts}/>
-                    <div></div>
-                ) : (
-                    <div style={{
-                        height: 300,
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        fontSize: 19
-                    }} className={styles[`contacts_container_${theme}`]}>
-                        Контактов пока что нет!
-                    </div>
-                )}
-
-
-
-            </div>
-
+            {error !== '' ? (
+                <div style={{
+                    height: '90%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    fontSize: 19,
+                    textAlign: 'center',
+                    color: theme === 'dark' ? '#E50A5E' : 'white'
+                }} className={styles[`contacts_container_${theme}`]}>
+                    {error}
+                </div>
+            ) : loading ? (
+                <div style={{
+                    height: '90%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    fontSize: 19
+                }} className={styles[`contacts_container_${theme}`]}>
+                    <CircularProgress sx={{color: theme === 'dark' ? '#E50A5E' : 'white'}} size={30}/>
+                </div>
+            ) : contacts.length !== 0 ? (
+                <ContactsContainer withSelect={true} height={310} contacts={contacts}/>
+            ) : (
+                <div style={{
+                    height: '90%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    fontSize: 19
+                }} className={styles[`contacts_container_${theme}`]}>
+                    Контактов пока что нет!
+                </div>
+            )}
 
             <AddCircleIcon onClick={creatingGroupHandler}  className={styles.buttons_modal} style={{alignSelf: 'center', position: 'absolute', top: 515, fontSize: 55}} />
         </Modal>

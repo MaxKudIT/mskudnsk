@@ -1,26 +1,40 @@
-import React, {FC} from 'react';
+import React, {FC, useMemo} from 'react';
 import ChatPreview, {ChatPreviewProps} from "../preview/ChatPreview";
+import {ChatPreviewsRes} from "../../dto/chat";
+import styles from "../../modules/Home.module.css";
+import {useTheme} from "../context/ThemeContext";
+import {useSelected} from "../context/selected/SelectedProvider";
 
 
 export type FilterBy = 'all' | 'chats' | 'groups' | 'contacts'
 export type FilteredListProps = {
-    array: ChatPreviewProps[],
+    array: ChatPreviewsRes[],
     type: FilterBy,
     input: string
 }
 
-// const SortArrayFunc = (array: ChatPreviewProps[], type: FilterBy, inputValue: string) => {
-//     if (type === 'chats') {
-//         return array.filter(cp => cp.nickname === inputValue)
-//     }
-//     return array
-// }
+
 
 
 const FilteredList: FC<FilteredListProps> = ({array, type, input}) => {
+
+    const {theme} = useTheme()
+
+    const {selectedChatId} = useSelected()
+
+    const filtered = useMemo(() => {
+            const searchLower = input.toLowerCase();
+            return array.filter(cp => 'User' in cp && cp.User.Name.toLowerCase().includes(searchLower))
+    }, [input, array])
+
     return (
         <>
-            {/*{SortArrayFunc(array, type, input).map(cp => (<ChatPreview color={cp.color} nickname={cp.nickname} lastMessage={cp.lastMessage} date={cp.date}/> ))}*/}
+            {filtered.map(preview => <ChatPreview
+                classname={preview.ChatId === selectedChatId ? styles[`chat_preview_selected_${theme}`]: styles[`chat_preview_${theme}`]}
+                User={preview.User}
+                MessageMeta={preview.MessageMeta}
+                ChatId={preview.ChatId}
+                ParticipantId={preview.ParticipantId}/>)}
         </>
     );
 };

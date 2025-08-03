@@ -28,7 +28,7 @@ const ContactPreviewWithSelect: FC<ContactPreviewRes> = ({Color, Status, UserId,
                 display: "flex",
                 alignItems: 'center',
                 justifyContent: 'center',
-                border: isSelected ? '3px solid green' : 'none'
+                border: isSelected ? '4px solid green' : 'none'
             }}><p style={{fontSize: 18, color: 'white', opacity: 0.9, fontWeight: 600}}>{Name[0]}</p></div>
             <div>
                 <p style={{color: isSelected ? '#08CF2C' : 'white', fontWeight: '500'}}>{Name}</p>

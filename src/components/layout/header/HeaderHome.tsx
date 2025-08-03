@@ -31,32 +31,29 @@ const HeaderHome: FC<HeaderProps> = ({actions}) => {
 
     const {upSelectedPopup} = useSelectedPopups()
 
-    const ChoiceReactElement = (index: number): ReactElement<SvgIconProps> => {
-        if (index > 3) {
-            setChoiceIndex(0)
-            return <StarBorderPurple500TwoToneIcon onClick={() => {setChoiceIndex(prev => prev + 1); actions.getChoiceIndex(0)}} fontSize={'small'} className={styles[`home_button_input_${theme}`]}/>
-        }
-        if (index === 1) {
-            return <ChatBubbleOutlineTwoToneIcon onClick={() => {setChoiceIndex(prev => prev + 1); actions.getChoiceIndex(1)}} fontSize={'small'} className={styles[`home_button_input_${theme}`]}/>
-        }
-        if (index === 2) {
-            return <PermContactCalendarTwoToneIcon onClick={() => {setChoiceIndex(prev => prev + 1); actions.getChoiceIndex(2)}} fontSize={'small'} className={styles[`home_button_input_${theme}`]}/>
-        }
-        if (index === 3) {
-            return  <GroupTwoToneIcon  onClick={() => {setChoiceIndex(prev => prev + 1); actions.getChoiceIndex(3)}} fontSize={'small'} className={styles[`home_button_input_${theme}`]}/>
-        }
-        return <StarBorderPurple500TwoToneIcon onClick={() => setChoiceIndex(prev => prev + 1)} fontSize={'small'} className={styles[`home_button_input_${theme}`]}/>
-
-    }
+    // const ChoiceReactElement = (index: number): ReactElement<SvgIconProps> => {
+    //     if (index > 3) {
+    //         setChoiceIndex(0)
+    //         return <StarBorderPurple500TwoToneIcon onClick={() => {setChoiceIndex(prev => prev + 1); actions.getChoiceIndex(0)}} fontSize={'small'} className={styles[`home_button_input_${theme}`]}/>
+    //     }
+    //     if (index === 1) {
+    //         return <ChatBubbleOutlineTwoToneIcon onClick={() => {setChoiceIndex(prev => prev + 1); actions.getChoiceIndex(1)}} fontSize={'small'} className={styles[`home_button_input_${theme}`]}/>
+    //     }
+    //     if (index === 2) {
+    //         return <PermContactCalendarTwoToneIcon onClick={() => {setChoiceIndex(prev => prev + 1); actions.getChoiceIndex(2)}} fontSize={'small'} className={styles[`home_button_input_${theme}`]}/>
+    //     }
+    //     if (index === 3) {
+    //         return  <GroupTwoToneIcon  onClick={() => {setChoiceIndex(prev => prev + 1); actions.getChoiceIndex(3)}} fontSize={'small'} className={styles[`home_button_input_${theme}`]}/>
+    //     }
+    //     return <StarBorderPurple500TwoToneIcon onClick={() => setChoiceIndex(prev => prev + 1)} fontSize={'small'} className={styles[`home_button_input_${theme}`]}/>
+    //
+    // }
 
     return (
         <div className={styles[`header_home_${theme}`]}>
 
             <Input value={input} onChange={(e) => {setInput(e.target.value); actions.getInputValue(e.target.value)}} className={styles[`input_custom_${theme}`]} placeholder={'Поиск...'} />
-            {input.length !== 0 ?
-                (<CloseIcon onClick={() => {setInput(''); actions.getInputValue('')}} className={styles[`home_button_input_${theme}`]}fontSize={'small'}/>) :
-                   ChoiceReactElement(choiceIndex)
-                }
+            {input.length !== 0 && (<CloseIcon onClick={() => {setInput(''); actions.getInputValue('')}} className={styles[`home_button_input_${theme}`]}fontSize={'small'}/>)}
             <div style={{height: '70%',
                         display: 'flex',
                         flexGrow: 1,
