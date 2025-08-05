@@ -47,7 +47,7 @@ const Home = () =>
             try {
 
 
-                websocket.connect(`http://localhost:3000/ws`);
+                websocket.connect(`http://localhost:8080/api/ws`);
                 if (websocket.socket?.readyState !== WebSocket.OPEN) {
                     await new Promise((resolve) => {
                         if (websocket.socket != null) {
@@ -80,7 +80,16 @@ const Home = () =>
 
     const {loading, get} = useDefaultGet<{previews: ChatPreviewsRes[]}>()
 
-    const [previews,setPreviews] = useState<ChatPreviewsRes[]>([]);
+    const [previews,setPreviews] = useState<ChatPreviewsRes[]>([
+        {User: {Name: 'Max', Color: 'red', Status: false},
+            ChatId: 'none',
+            MessageMeta: {Content: 'Я',
+                CreatedAt: new Date(),
+                IsMy: false,
+                UnReadMessages: [],
+                SenderId: 'i',
+                IsRead: false},
+                ParticipantId: 'i'}]);
     const [error, setError] = useState('')
 
     const {selectedChatId, setSelectedChatId} = useSelected()
@@ -196,7 +205,7 @@ const Home = () =>
                   <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 250}}>
                       <CircularProgress sx={{color: '#E50A5E'}} size={30}/>
                   </div>
-              ) : previews.length !== 0 ?
+              ) : previews.length !== 0  ?
                   input.length !== 0 ? (
                       <FilteredList input={input} type={calculateInputType(choiceindex)}  array={previews}/>
                   ) : (

@@ -1,8 +1,8 @@
 import axios, {AxiosError, AxiosRequestConfig} from "axios";
 
-const host = process.env.REACT_APP_HOST
+const host2 = process.env["REACT_APP_HOST "]
 
-export const v1 = axios.create({baseURL: `http://${host}:3000/`})
+export const v1 = axios.create({baseURL: `http://localhost:8080/api`})
 v1.interceptors.response.use(
     response => response,
     async (error: AxiosError<{error: string}>) => {
@@ -16,7 +16,7 @@ v1.interceptors.response.use(
                 });
                 return v1(originalRequest);
             } catch (refreshError) {
-                window.location.replace('http://localhost:3001/auth')
+                window.location.replace(`http://localhost:8080/auth`)
                 return Promise.reject(refreshError);
             }
         }

@@ -18,10 +18,8 @@ import {useDefaultGet} from "../hooks/getQueries";
 const Auth = () =>
   {
 
-    
 
-
-
+      
 
 
       const navigate = useNavigate();

@@ -52,7 +52,7 @@ class WebSocketService {
             this.connect(url);
         } catch (error) {
             console.error('Token refresh failed', error);
-            window.location.replace('http://localhost:3001/auth');
+            window.location.replace('http://localhost:8080/auth');
         }
     }
 

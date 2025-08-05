@@ -25,7 +25,8 @@ export interface ChatPreviewsOptUI {
         Content: string
         IsRead: boolean
         CreatedAt: Date | string
-    }
+    },
+    ChatId: string
 }
 
 
@@ -34,9 +35,10 @@ export const SelectedContext = createContext<{
     selectedChatId: string | null,
     setSelectedChatId: (chatId: string | null) => void,
     participantId: string | null,
+    previewsUI: ChatPreviewsOptUI[],
     setParticipantId: (participant: string | null) => void,
-    chatPreviewOpt: ChatPreviewsOptUI | null,
-    setPreview: (preview: ChatPreviewsOptUI | null) => void,
+    addPreview: (preview: ChatPreviewsOptUI) => void,
+    clearPreviews: () => void,
     unRead: number | null
     minusUnRead: () => void,
     setUnRead: (value: number | null) => void
@@ -46,8 +48,9 @@ export const SelectedContext = createContext<{
     setSelectedChatId: (id: string | null) => {},
     participantId: null,
     setParticipantId: (ptcp: string | null) => {},
-    chatPreviewOpt: null,
-    setPreview: (preview: ChatPreviewsOptUI | null) => {},
+    previewsUI: [],
+    addPreview: (preview: ChatPreviewsOptUI) => {},
+    clearPreviews: () => {},
     unRead: null,
     minusUnRead: () => {},
     setUnRead: (value: number | null) => {}

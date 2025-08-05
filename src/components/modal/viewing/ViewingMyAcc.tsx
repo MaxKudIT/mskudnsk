@@ -33,7 +33,7 @@ const ViewingMyAcc: FC<MiniModalProps> = ({onClose, condition, height, left}) =>
     const {loading, get} = useDefaultGet<{Data: UserRes}>()
     const {deleteC} = useDefaultDelete()
     const {clearSelectedPopups} = useSelectedPopups()
-    const {setSelectedChatId, setPreview, setUnRead} = useSelected()
+    const {setSelectedChatId, clearPreviews, setUnRead} = useSelected()
 
     const navigate = useNavigate();
 
@@ -161,7 +161,7 @@ const ViewingMyAcc: FC<MiniModalProps> = ({onClose, condition, height, left}) =>
                             const req = await deleteC(`/users/${id}`)
                             clearSelectedPopups()
                             setSelectedChatId(null)
-                            setPreview(null)
+                            clearPreviews()
                             setUnRead(null)
                             navigate('/auth')
 

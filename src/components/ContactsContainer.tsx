@@ -19,7 +19,7 @@ const ContactsContainer: FC<ContactsContainerProps> = ({contacts, height, withSe
         <div style={{height: height || 300}} className={styles[`contacts_container_${theme}`]}>
 
             {contacts.map(contact => (
-                <PreviewComponent UserId={contact.UserId} Color={contact.Color} Name={contact.Name} Status={contact.Status}/>
+                <PreviewComponent key={contact.UserId} UserId={contact.UserId} Color={contact.Color} Name={contact.Name} Status={contact.Status}/>
             ))}
 
 

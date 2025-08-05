@@ -15,10 +15,15 @@ export const SelectedProvider: FC<{children: ReactNode}> = ({children}) => {
         setPtcp(id)
     }
 
-    const [chatPreviewOpt, setPreviewP] = useState<ChatPreviewsOptUI | null>(null)
+    const [previewsUI, setPreviewP] = useState<ChatPreviewsOptUI[]>([])
 
-    const setPreview = (preview: ChatPreviewsOptUI | null) => {
-        setPreviewP(preview)
+    const addPreview = (preview: ChatPreviewsOptUI) => {
+        const filtered = previewsUI.filter(el => el.ChatId !== preview.ChatId)
+        setPreviewP([...filtered, preview])
+    }
+
+    const clearPreviews = () => {
+        setPreviewP([])
     }
 
 
@@ -34,7 +39,7 @@ export const SelectedProvider: FC<{children: ReactNode}> = ({children}) => {
 
 
     return (
-        <SelectedContext.Provider value={{selectedChatId: selected, setSelectedChatId, participantId, setParticipantId, chatPreviewOpt, setPreview, unRead, minusUnRead, setUnRead}}>
+        <SelectedContext.Provider value={{selectedChatId: selected, setSelectedChatId, participantId, setParticipantId, previewsUI, addPreview, clearPreviews, unRead, minusUnRead, setUnRead}}>
             {children}
         </SelectedContext.Provider>
     );

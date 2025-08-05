@@ -10,13 +10,14 @@ import ChatPreview from "./preview/ChatPreview";
 
 
 const ChatList: FC<{chats: (ChatPreviewsRes | GroupPreviewT)[]}> = ({chats}) => {
-    const {selectedChatId, chatPreviewOpt} = useSelected();
+    const {selectedChatId, previewsUI} = useSelected();
     const {theme} = useTheme()
     return (
         <div className={styles.chat_list}>
             {chats.map(chatpreview => {
                 if ('title' in chatpreview) {
                     return (<GroupPreview
+                        key={chatpreview.id}
                         id={chatpreview.id}
                         classname={chatpreview.id === selectedChatId ? styles[`chat_preview_selected_${theme}`]: styles[`chat_preview_${theme}`]}
                         color={chatpreview.color}
@@ -24,21 +25,25 @@ const ChatList: FC<{chats: (ChatPreviewsRes | GroupPreviewT)[]}> = ({chats}) => 
                         lastMessage={chatpreview.lastMessage}
                         date={chatpreview.date}/>)
                 } else {
-                    if (chatPreviewOpt !== null && selectedChatId === chatpreview.ChatId) {
+                    const previewUI = previewsUI.find(el => el.ChatId === chatpreview.ChatId)
+                    console.log(previewUI)
+                    if (previewUI)
                         return (<ChatPreview
+                            key={chatpreview.ChatId}
                             User={{Name: chatpreview.User.Name, Color: chatpreview.User.Color, Status: chatpreview.User.Status}}
-                            MessageMeta={{Content: chatPreviewOpt.MessageMeta.Content,
-                                IsRead: chatPreviewOpt.MessageMeta.IsRead,
-                                CreatedAt: chatPreviewOpt.MessageMeta.CreatedAt,
-                                IsMy: true,
+                            MessageMeta={{Content: previewUI.MessageMeta.Content,
+                                IsRead: previewUI.MessageMeta.IsRead,
+                                CreatedAt: previewUI.MessageMeta.CreatedAt,
+                                IsMy: chatpreview.MessageMeta.IsMy,
                                 SenderId: chatpreview.MessageMeta.SenderId,
                                 UnReadMessages: chatpreview.MessageMeta.UnReadMessages}}
                             ParticipantId={chatpreview.ParticipantId}
                             ChatId={chatpreview.ChatId}
                             classname={chatpreview.ChatId === selectedChatId ? styles[`chat_preview_selected_${theme}`]: styles[`chat_preview_${theme}`]}
                         />)
-                    } else {
+                    else {
                         return (<ChatPreview
+                            key={chatpreview.ChatId}
                             User={{Name: chatpreview.User.Name, Color: chatpreview.User.Color, Status: chatpreview.User.Status}}
                             MessageMeta={{Content: chatpreview.MessageMeta.Content,
                                 IsRead: chatpreview.MessageMeta.IsRead,
@@ -51,7 +56,6 @@ const ChatList: FC<{chats: (ChatPreviewsRes | GroupPreviewT)[]}> = ({chats}) => 
                             classname={chatpreview.ChatId === selectedChatId ? styles[`chat_preview_selected_${theme}`]: styles[`chat_preview_${theme}`]}
                         />)
                     }
-
 
                 }
             }) }

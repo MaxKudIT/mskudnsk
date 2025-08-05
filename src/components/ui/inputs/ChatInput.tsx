@@ -23,7 +23,7 @@ const ChatInput: FC<ChatProps> = ({getInputValue}) => {
     const {theme} = useTheme()
 
     const Id = sessionStorage.getItem('userdata');
-    const {selectedChatId, participantId, setPreview} = useSelected()
+    const {selectedChatId, participantId, addPreview} = useSelected()
 
 
 
@@ -58,7 +58,7 @@ const ChatInput: FC<ChatProps> = ({getInputValue}) => {
         }
         websocket.sendMessage(messageDTO)
         getInputValue(message)
-        setPreview({MessageMeta: {Content: input, CreatedAt: new Date(), IsRead: false}, User: {Name: 'Max', Color: 'orange', Status: true}})
+        addPreview({MessageMeta: {Content: input, CreatedAt: new Date(), IsRead: false}, User: {Name: 'Max', Color: 'orange', Status: true}, ChatId: selectedChatId!})
         setInput('')
     }
 
@@ -66,6 +66,7 @@ const ChatInput: FC<ChatProps> = ({getInputValue}) => {
 
         if (input.length > 0 && event.key === 'Enter') {
             sendMessage()
+            addPreview({MessageMeta: {Content: input, CreatedAt: new Date(), IsRead: false}, User: {Name: 'Max', Color: 'orange', Status: true}, ChatId: selectedChatId!})
         }
     };
 

@@ -49,7 +49,7 @@ const Chat = () => {
 
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({behavior: "smooth"})
+        messagesEndRef.current?.scrollIntoView(false)
     }, [chatProps?.messages]);
 
 
@@ -72,7 +72,7 @@ const Chat = () => {
         }
         getData()
 
-    }, []);
+    }, [selectedChatId]);
 
     const getInputValue = (message: ChatMessageRes) => {
         setChatProps(prev => {
@@ -118,6 +118,7 @@ const Chat = () => {
                                 {chatProps?.messages.map(message => {
                                   if (message.SenderId === Id) {
                                       return ( <MessageWrapperMy
+                                          key={message.Id}
                                           CorrespondenceType={message.CorrespondenceType}
                                           Id={message.Id}
                                           ChatId={message.ChatId}
@@ -130,7 +131,7 @@ const Chat = () => {
                                       />)
                                   } else {
                                       return  ( <MessageWrapperParticipant
-
+                                          key={message.Id}
                                           CorrespondenceType={message.CorrespondenceType}
                                           Id={message.Id}
                                           ChatId={message.ChatId}

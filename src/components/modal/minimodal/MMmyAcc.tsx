@@ -34,7 +34,7 @@ const MMmyAcc: FC<MiniModalProps> = ({onClose, condition, buttonsProps, height, 
     const backModalCalculdate = theme === 'dark' ? 'linear-gradient(0deg,rgba(79, 3, 34, 1) 0%, rgba(56, 3, 28, 1) 100%)' : 'linear-gradient(0deg,rgba(76, 9, 171, 1) 0%, rgba(64, 9, 143, 1) 100%)'
 
 
-    const {setSelectedChatId, setPreview, setUnRead} = useSelected()
+    const {setSelectedChatId, clearPreviews, setUnRead} = useSelected()
 
 
 
@@ -73,7 +73,7 @@ const MMmyAcc: FC<MiniModalProps> = ({onClose, condition, buttonsProps, height, 
                             await getLogout('/logout')
                             clearSelectedPopups()
                             setSelectedChatId(null)
-                            setPreview(null)
+                            clearPreviews()
                             setUnRead(null)
                             navigate('/auth')
                         }} style={{color: 'red', fontWeight: 600}} className={styles.home_modal_button}>
